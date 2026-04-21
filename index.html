@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartPlayer · Presale Matrix v4</title>
+<style>
+:root{
+  /* Editorial Dark palette */
+  --bg:#0a0a0f;
+  --bg2:#101016;
+  --bg3:#16161e;
+  --bg4:#1d1d28;
+  --bg5:#242432;
+  --bg-hover:#1a1a24;
+
+  --border:#1f1f2b;
+  --border2:#2a2a3a;
+  --border3:#38384e;
+
+  --text:#f0f0f5;
+  --text2:#c8c8d8;
+  --muted:#6e6e96;
+  --faint:#404058;
+  --dim:#2a2a3c;
+
+  --accent:#3dd68c;
+  --accent-d:#2fb573;
+  --accent-dim:rgba(61,214,140,.1);
+  --accent-glow:rgba(61,214,140,.04);
+
+  --y-bg:rgba(61,214,140,.1);
+  --y-br:rgba(61,214,140,.25);
+  --y:#3dd68c;
+
+  --p-bg:rgba(240,160,48,.1);
+  --p-br:rgba(240,160,48,.25);
+  --p:#f0a030;
+
+  --n-bg:rgba(224,56,56,.1);
+  --n-br:rgba(224,56,56,.25);
+  --n:#e03838;
+
+  --u-bg:rgba(80,80,140,.15);
+  --u:#7878a8;
+
+  --w-bg:rgba(245,197,24,.1);
+  --w-br:rgba(245,197,24,.3);
+  --w:#f5c518;
+
+  --info:#4da6ff;
+
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',system-ui,sans-serif;
+  --mono:'SF Mono','Menlo','Consolas',monospace;
+
+  --r:6px;
+  --r2:10px;
+  --r3:14px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+*::selection{background:var(--accent-dim);color:var(--accent);}
+
+html,body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.55;min-height:100vh;font-feature-settings:"ss01","cv01";}
+body{overflow-x:hidden;}
+
+button{font-family:inherit;cursor:pointer;}
+input{font-family:inherit;}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+.header{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:24px;
+  align-items:center;
+  position:sticky;top:0;z-index:130;
+  backdrop-filter:blur(14px);
+}
+
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#143825 0%,#081a10 100%);
+  border:1px solid var(--accent-d);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--accent);
+  flex-shrink:0;
+  box-shadow:0 0 20px rgba(61,214,140,.08);
+}
+.brand-text{line-height:1.2;}
+.brand-title{font-size:14px;font-weight:600;letter-spacing:-.15px;}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+.tabs{display:flex;gap:2px;background:var(--bg3);padding:3px;border-radius:var(--r2);border:1px solid var(--border);}
+.tab{
+  padding:7px 16px;font-size:12px;font-weight:500;
+  background:transparent;border:none;color:var(--muted);
+  border-radius:7px;transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.tab:hover{color:var(--text2);}
+.tab.active{background:var(--bg);color:var(--text);box-shadow:0 1px 0 rgba(255,255,255,.04);}
+.tab-icon{font-size:13px;opacity:.8;}
+
+.header-r{display:flex;align-items:center;gap:8px;}
+.search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:7px 12px;min-width:240px;
+  transition:border-color .15s;
+}
+.search:focus-within{border-color:var(--border3);background:var(--bg4);}
+.search svg{opacity:.4;flex-shrink:0;}
+.search input{background:none;border:none;color:var(--text);font-size:13px;outline:none;width:100%;}
+.search input::placeholder{color:var(--muted);}
+.search kbd{
+  background:var(--bg);color:var(--muted);font-size:10px;font-family:var(--mono);
+  padding:2px 6px;border-radius:3px;border:1px solid var(--border2);
+}
+
+.iconbtn{
+  padding:7px 10px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);color:var(--muted);font-size:12px;
+  transition:all .12s;display:flex;align-items:center;gap:5px;
+}
+.iconbtn:hover{color:var(--text);border-color:var(--border2);background:var(--bg4);}
+
+/* ═══════════════════════════════════════
+   VIEW CONTAINER
+═══════════════════════════════════════ */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ═══════════════════════════════════════
+   VIEW 1: ОБЗОР (Dashboard)
+═══════════════════════════════════════ */
+.dash{padding:28px 24px;max-width:1600px;margin:0 auto;}
+
+.dash-hero{
+  margin-bottom:28px;padding:24px 28px;
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border);border-radius:var(--r3);
+  position:relative;overflow:hidden;
+}
+.dash-hero::before{
+  content:"";position:absolute;top:-50%;right:-10%;
+  width:400px;height:400px;
+  background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);
+  pointer-events:none;
+}
+.dash-hero h1{font-size:22px;font-weight:600;letter-spacing:-.3px;margin-bottom:8px;}
+.dash-hero p{color:var(--muted);font-size:14px;max-width:800px;}
+.hero-stats{display:flex;gap:32px;margin-top:24px;flex-wrap:wrap;position:relative;z-index:1;}
+.hero-stat{}
+.hero-stat-v{font-size:28px;font-weight:700;color:var(--accent);letter-spacing:-.5px;line-height:1;}
+.hero-stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px;}
+
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:32px 0 14px;}
+.section-title{font-size:16px;font-weight:600;letter-spacing:-.2px;}
+.section-sub{color:var(--muted);font-size:12px;}
+
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+.pcard{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px 18px 16px;transition:all .15s;cursor:pointer;position:relative;overflow:hidden;
+}
+.pcard::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--pcolor,var(--accent));opacity:.7;
+}
+.pcard:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-1px);}
+.pcard-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.pcard-name{font-size:15px;font-weight:600;letter-spacing:-.1px;}
+.pcard-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.4px;}
+.pcard-badge.stable{background:var(--y-bg);color:var(--y);}
+.pcard-badge.legacy{background:var(--p-bg);color:var(--p);}
+.pcard-badge.new{background:var(--accent-dim);color:var(--accent);}
+.pcard-sub{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.pcard-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;display:flex;margin-bottom:10px;}
+.pcard-bar-y{background:var(--y);}
+.pcard-bar-p{background:var(--p);}
+.pcard-bar-n{background:var(--n);}
+.pcard-stats{display:flex;gap:12px;font-size:11px;}
+.pcard-stat{display:flex;align-items:center;gap:4px;color:var(--muted);}
+.pcard-stat b{color:var(--text);font-weight:600;}
+.pcard-tip{
+  margin-top:12px;padding-top:12px;border-top:1px dashed var(--border2);
+  font-size:11px;color:var(--muted);line-height:1.5;
+}
+.pcard-tip-label{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;font-weight:600;}
+
+.scenarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;}
+.scen{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;transition:border-color .15s;
+}
+.scen:hover{border-color:var(--border2);}
+.scen-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.scen-emoji{font-size:22px;}
+.scen-title{font-size:14px;font-weight:600;}
+.scen-answer{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.scen-plats{display:flex;flex-wrap:wrap;gap:5px;}
+.scen-plat{
+  font-size:10px;padding:3px 8px;border-radius:3px;font-weight:600;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.scen-plat.best{background:var(--y-bg);color:var(--y);border:1px solid var(--y-br);}
+.scen-plat.ok{background:var(--p-bg);color:var(--p);border:1px solid var(--p-br);}
+.scen-plat.no{background:var(--n-bg);color:var(--n);border:1px solid var(--n-br);}
+
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px;}
+.flag{
+  background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--n);
+  border-radius:var(--r);padding:12px 14px;transition:border-color .12s;
+}
+.flag.warn{border-left-color:var(--p);}
+.flag.bug{border-left-color:var(--w);}
+.flag:hover{border-color:var(--border2);border-left-color:inherit;}
+.flag-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;gap:10px;}
+.flag-plat{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.flag-title{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.35;}
+.flag-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   VIEW 2: МАТРИЦА
+═══════════════════════════════════════ */
+.matrix-controls{
+  padding:10px 24px;border-bottom:1px solid var(--border);
+  background:var(--bg2);display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+}
+.legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-right:8px;}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+.legend-dot.y{background:var(--y);}
+.legend-dot.p{background:var(--p);}
+.legend-dot.n{background:var(--n);}
+.legend-dot.u{background:var(--u);}
+.legend-dot.w{background:var(--w);}
+
+.mx-filter-sep{height:14px;width:1px;background:var(--border2);margin:0 6px;}
+
+.quick-btn{
+  padding:5px 10px;border-radius:var(--r);border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text2);font-size:11px;font-weight:500;
+  transition:all .12s;white-space:nowrap;
+}
+.quick-btn:hover{border-color:var(--border3);color:var(--text);}
+.quick-btn.on{border-color:var(--p);color:var(--p);background:var(--p-bg);}
+
+.cat-filter{
+  padding:8px 24px 10px;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.cat-chip{
+  padding:4px 10px;border-radius:20px;border:1px solid var(--border);
+  background:var(--bg2);color:var(--muted);font-size:11px;font-weight:500;
+  transition:all .1s;display:inline-flex;align-items:center;gap:5px;
+}
+.cat-chip:hover{border-color:var(--border2);color:var(--text2);}
+.cat-chip.on{color:var(--text);border-color:var(--ccol,var(--accent));background:var(--bg3);}
+.cat-chip-dot{width:6px;height:6px;border-radius:50%;background:var(--ccol,var(--accent));}
+
+.twrap{overflow:auto;max-height:calc(100vh - 210px);position:relative;}
+table{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;}
+
+thead th{
+  position:sticky;top:0;z-index:50;background:var(--bg2);
+  border-bottom:1px solid var(--border2);padding:10px 8px;
+  font-size:11px;font-weight:600;color:var(--text2);text-align:center;
+  white-space:nowrap;min-width:125px;
+}
+thead th.fc{
+  position:sticky;left:0;z-index:55;text-align:left;
+  min-width:260px;max-width:260px;border-right:1px solid var(--border);
+  font-size:10px;font-weight:700;letter-spacing:.4px;color:var(--faint);
+  background:var(--bg2);
+}
+.thp{display:flex;flex-direction:column;align-items:center;gap:2px;border-top:3px solid var(--pcolor,var(--accent));padding-top:4px;margin-top:-10px;padding-bottom:2px;}
+.thp .pn{color:var(--text);font-size:12px;font-weight:600;}
+.thp .ps2{color:var(--muted);font-size:9px;font-weight:400;line-height:1.2;}
+.new-badge{display:inline-block;background:var(--accent-dim);border:1px solid var(--accent-d);color:var(--accent);font-size:7px;font-weight:700;padding:0 3px;border-radius:2px;vertical-align:middle;margin-left:3px;letter-spacing:.3px;}
+
+/* category rows */
+.crow td{
+  background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:7px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;cursor:pointer;user-select:none;
+  position:relative;
+}
+.crow td:first-child{position:sticky;left:0;z-index:6;background:var(--bg);}
+.ct{display:inline-block;width:12px;text-align:center;margin-right:6px;color:var(--faint);}
+
+/* feature rows */
+tr.fr{border-bottom:1px solid var(--border);transition:background .08s;}
+tr.fr:hover td{background:var(--bg-hover)!important;}
+tr.fr.gone{display:none;}
+
+td.fn{
+  position:sticky;left:0;background:var(--bg2);z-index:4;
+  padding:8px 14px;font-size:12px;min-width:260px;max-width:260px;
+  word-break:break-word;border-right:1px solid var(--border);line-height:1.45;
+  transition:background .08s;
+}
+tr.fr:hover td.fn{background:var(--bg3)!important;}
+
+.tag{
+  display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;
+  font-weight:700;margin-left:6px;vertical-align:middle;letter-spacing:.2px;
+}
+.t-pay{background:rgba(167,139,250,.12);color:#a78bfa;}
+.t-proj{background:rgba(77,166,255,.12);color:#4da6ff;}
+
+td.sc{text-align:center;padding:6px 4px;min-width:125px;}
+
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 9px;border-radius:5px;font-size:11px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all .1s;
+  border:1px solid transparent;
+}
+.chip:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.chip.y{background:var(--y-bg);color:var(--y);border-color:var(--y-br);}
+.chip.p{background:var(--p-bg);color:var(--p);border-color:var(--p-br);}
+.chip.n{background:var(--n-bg);color:var(--n);border-color:var(--n-br);}
+.chip.u{background:var(--u-bg);color:var(--u);}
+.chip.w{background:var(--w-bg);color:var(--w);border-color:var(--w-br);}
+.chip-icon{font-size:10px;line-height:1;}
+.chip.has-note::after{content:"·";margin-left:2px;font-weight:bold;}
+
+/* ═══════════════════════════════════════
+   VIEW 3: ПЛАТФОРМЫ DEEP DIVE
+═══════════════════════════════════════ */
+.platforms{padding:24px;max-width:1600px;margin:0 auto;}
+.platforms-back{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--muted);font-size:12px;margin-bottom:18px;transition:all .12s;
+}
+.platforms-back:hover{color:var(--text);border-color:var(--border2);}
+
+.plat-big-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+.plat-big{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:22px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+}
+.plat-big::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--pcolor,var(--accent));
+}
+.plat-big:hover{transform:translateY(-2px);border-color:var(--border2);background:var(--bg3);}
+
+.plat-big-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px;}
+.plat-big-title{font-size:18px;font-weight:600;letter-spacing:-.2px;}
+.plat-big-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+.plat-big-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-bottom:16px;padding:12px;
+  background:var(--bg);border-radius:var(--r);
+}
+.plat-big-sv{font-size:20px;font-weight:700;line-height:1;}
+.plat-big-sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px;}
+.plat-big-sv.y{color:var(--y);}
+.plat-big-sv.p{color:var(--p);}
+.plat-big-sv.n{color:var(--n);}
+
+.plat-big-section{margin-top:14px;}
+.plat-big-label{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-weight:600;}
+.plat-big-list{font-size:11px;line-height:1.65;color:var(--muted);}
+.plat-big-list span{color:var(--text2);display:block;padding:2px 0;border-bottom:1px dashed transparent;}
+
+.plat-detail-view{display:none;}
+.plat-detail-view.active{display:block;}
+
+.plat-detail-hero{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:28px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.plat-detail-hero::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:var(--pcolor,var(--accent));
+}
+.plat-detail-title{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;}
+.plat-detail-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.plat-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+.plat-detail-met{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;
+}
+.plat-detail-met-v{font-size:20px;font-weight:700;letter-spacing:-.2px;line-height:1;margin-bottom:6px;}
+.plat-detail-met-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+
+.plat-detail-cats{display:grid;gap:10px;}
+.plat-detail-cat{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:16px 18px;
+}
+.plat-detail-cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;}
+.plat-detail-cat-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
+.plat-detail-cat-dot{width:8px;height:8px;border-radius:50%;}
+.plat-detail-cat-counts{font-size:10px;color:var(--muted);display:flex;gap:8px;}
+.plat-detail-cat-counts span{padding:2px 7px;border-radius:3px;font-weight:700;}
+.plat-detail-cat-counts span.y{background:var(--y-bg);color:var(--y);}
+.plat-detail-cat-counts span.p{background:var(--p-bg);color:var(--p);}
+.plat-detail-cat-counts span.n{background:var(--n-bg);color:var(--n);}
+
+.plat-detail-feat{
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;
+  padding:8px 0;border-top:1px solid var(--border);font-size:12px;
+}
+.plat-detail-feat:first-of-type{border-top:none;}
+.plat-detail-feat-name{color:var(--text2);line-height:1.5;}
+.plat-detail-feat-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   SIDE PANEL
+═══════════════════════════════════════ */
+#panel{
+  position:fixed;right:0;top:0;height:100vh;width:400px;z-index:200;
+  background:var(--bg2);border-left:1px solid var(--border2);
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.5);
+}
+#panel.open{transform:none;}
+.panel-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.panel-head-t{flex:1;min-width:0;}
+#pp{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+#pf{font-size:15px;font-weight:600;line-height:1.4;letter-spacing:-.1px;}
+.pcl{background:none;border:none;color:var(--muted);font-size:22px;padding:0;line-height:1;flex-shrink:0;}
+.pcl:hover{color:var(--text);}
+.panel-body{flex:1;overflow-y:auto;padding:18px 20px;}
+#pst{display:inline-block;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase;}
+#pst.y{background:var(--y-bg);color:var(--y);}
+#pst.p{background:var(--p-bg);color:var(--p);}
+#pst.n{background:var(--n-bg);color:var(--n);}
+#pst.u{background:var(--u-bg);color:var(--u);}
+#pst.w{background:var(--w-bg);color:var(--w);}
+#pn{font-size:13px;line-height:1.7;color:var(--text2);}
+#pn ul{margin-left:18px;margin-top:8px;}
+#pn li{margin-bottom:6px;color:var(--muted);}
+#pn p+ul{margin-top:6px;}
+#pn strong{color:var(--text);}
+
+.panel-help{
+  margin-top:18px;padding:12px;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);font-size:11px;color:var(--muted);line-height:1.6;
+}
+.panel-help-label{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:6px;}
+
+/* Backdrop */
+#backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+#backdrop.on{opacity:1;pointer-events:auto;}
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:4px;border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:var(--border3);}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width:900px){
+  .header{grid-template-columns:1fr;gap:10px;}
+  .tabs{justify-content:center;}
+  .search{min-width:unset;}
+  #panel{width:100vw;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="brand">
+    <div class="brand-icon">SP</div>
+    <div class="brand-text">
+      <div class="brand-title">SmartPlayer Compatibility Matrix</div>
+      <div class="brand-sub">Presale-инструмент · v4.0 · 8 платформ · Апрель 2026</div>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-view="dash" onclick="switchView('dash')">
+      <span class="tab-icon">◎</span>Обзор
+    </button>
+    <button class="tab" data-view="matrix" onclick="switchView('matrix')">
+      <span class="tab-icon">▦</span>Матрица
+    </button>
+    <button class="tab" data-view="platforms" onclick="switchView('platforms')">
+      <span class="tab-icon">▤</span>Платформы
+    </button>
+  </nav>
+
+  <div class="header-r">
+    <div class="search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="si" placeholder="Поиск функции или платформы…" oninput="onSearchInput()">
+      <kbd id="kbdhint">⌘ K</kbd>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════ VIEW 1: ОБЗОР ═══════════════════════════════════════ -->
+<main id="view-dash" class="view active">
+  <div class="dash">
+    <div class="dash-hero">
+      <h1>Совместимость платформ SmartPlayer</h1>
+      <p>Быстрый ответ на вопрос «будет ли это работать у клиента?». Данные собраны из официальной wiki.smartplayer.org, по каждой ячейке — ссылки на ограничения и нюансы. Используйте вкладку «Матрица» для полного сравнения, «Платформы» — для детального разбора каждой ОС.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-v">8</div><div class="hero-stat-l">Поддерживаемых платформ</div></div>
+        <div class="hero-stat"><div class="hero-stat-v" id="hs-feat">0</div><div class="hero-stat-l">Функций отслеживается</div></div>
+        <div class="hero-stat"><div class="hero-stat-v" id="hs-cats">0</div><div class="hero-stat-l">Категорий</div></div>
+        <div class="hero-stat"><div class="hero-stat-v" id="hs-issues">0</div><div class="hero-stat-l">Красных флагов</div></div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="section-title">Платформы</div>
+      </div>
+      <div class="section-sub">Клик по карточке — детальный обзор платформы</div>
+    </div>
+    <div class="pgrid" id="dash-pgrid"></div>
+
+    <div class="section-head">
+      <div>
+        <div class="section-title">Сценарии клиентов</div>
+      </div>
+      <div class="section-sub">Типовые ситуации в продаже — какую платформу рекомендовать</div>
+    </div>
+    <div class="scenarios" id="dash-scenarios"></div>
+
+    <div class="section-head">
+      <div>
+        <div class="section-title">Критичные ограничения (топ-флаги пресейла)</div>
+      </div>
+      <div class="section-sub">То, что важно помнить при разговоре с клиентом</div>
+    </div>
+    <div class="flags" id="dash-flags"></div>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════ VIEW 2: МАТРИЦА ═══════════════════════════════════════ -->
+<main id="view-matrix" class="view">
+  <div class="matrix-controls">
+    <span class="legend-item"><span class="legend-dot y"></span>Работает</span>
+    <span class="legend-item"><span class="legend-dot p"></span>Частично</span>
+    <span class="legend-item"><span class="legend-dot n"></span>Нет</span>
+    <span class="legend-item"><span class="legend-dot w"></span>Баг</span>
+    <span class="legend-item"><span class="legend-dot u"></span>N/A</span>
+    <div class="mx-filter-sep"></div>
+    <button class="quick-btn" id="issues-btn" onclick="toggleIssues()">⚠ Только ограничения</button>
+    <button class="quick-btn" onclick="expandAll()">↓ Развернуть всё</button>
+    <button class="quick-btn" onclick="collapseAll()">↑ Свернуть всё</button>
+    <button class="quick-btn" onclick="resetFilter()">× Сбросить</button>
+  </div>
+  <div class="cat-filter" id="cat-filter"></div>
+  <div class="twrap">
+    <table id="mt">
+      <thead><tr id="hr"><th class="fc">ФУНКЦИЯ</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════ VIEW 3: ПЛАТФОРМЫ ═══════════════════════════════════════ -->
+<main id="view-platforms" class="view">
+  <div class="platforms">
+    <div id="platforms-list">
+      <div class="plat-big-grid" id="plat-big-grid"></div>
+    </div>
+    <div id="platform-detail" class="plat-detail-view">
+      <button class="platforms-back" onclick="backToList()">← Назад к списку платформ</button>
+      <div id="platform-detail-content"></div>
+    </div>
+  </div>
+</main>
+
+<!-- SIDE PANEL -->
+<div id="backdrop" onclick="closePanel()"></div>
+<aside id="panel" aria-hidden="true">
+  <div class="panel-head">
+    <div class="panel-head-t">
+      <div id="pp"></div>
+      <div id="pf"></div>
+    </div>
+    <button class="pcl" onclick="closePanel()" aria-label="Закрыть">×</button>
+  </div>
+  <div class="panel-body">
+    <div id="pst"></div>
+    <div id="pn"></div>
+    <div class="panel-help" id="panel-help" style="display:none;">
+      <div class="panel-help-label">Совет пресейлу</div>
+      <div id="panel-help-text"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+// ═══════════════════════════════════════
+//  PLATFORMS
+// ═══════════════════════════════════════
+const PLATS=[
+  {id:'a',  name:'Android',       sub:'5.0+ (рек. 7.0+)',       col:'#3dd68c', badge:'stable',
+   oneLiner:'Универсальная приставочная платформа. Зависит от модели.',
+   keys:['Приставки Ugoos, Harper, Philips TVs','Signature / Device Owner для полного управления','RTSP через VLC, пресеты для разных моделей']},
+  {id:'w',  name:'Windows',       sub:'7+ (рек. Win10/11)',     col:'#4da6ff', badge:'stable',
+   oneLiner:'Максимум возможностей. До 8K, любые кодеки, Matrox.',
+   keys:['DirectX 11, драйверы GPU обязательны','Single-instance приложение','Отладка виджетов через порт 9223']},
+  {id:'l',  name:'Linux',         sub:'Ubuntu 22.04+ / Astra 1.7+', col:'#ff8c42', badge:'stable',
+   oneLiner:'Импортозамещение — Astra Linux рекомендован.',
+   keys:['Wayland по умолчанию, X11 для таймера','Поддержка H.265','Проприетарные драйверы видео']},
+  {id:'t',  name:'Samsung Tizen', sub:'SSSP4–10 · Tizen 2.4–7', col:'#a78bfa', badge:'stable',
+   oneLiner:'Проф.панели Samsung. Жёсткие требования к контенту.',
+   keys:['RTSP НЕ работает — только HLS','Анимации не поддерживаются','Видео всегда на нижнем слое']},
+  {id:'o',  name:'Samsung Orsay', sub:'SSSP2–3 · Legacy',       col:'#fb923c', badge:'legacy',
+   oneLiner:'Устаревшая платформа. Только горизонталь, старый движок.',
+   keys:['Только горизонтальная ориентация','Файл ≤ 1.5 ГБ','Нет touch, нет QR Remote']},
+  {id:'wb', name:'LG WebOS',      sub:'2.0 – 9.0',              col:'#f472b6', badge:'stable',
+   oneLiner:'Проф.панели LG. Бытовые НЕ поддерживаются.',
+   keys:['WebOS 2.0 — без мультизонности','Видеостена: 1 зона + 1 страница','Порядок перезагрузки: мастер первый']},
+  {id:'r',  name:'Raspberry Pi',  sub:'Pi3 / Pi4 / Pi5',        col:'#34d399', badge:'stable',
+   oneLiner:'Бюджетный вариант. Pi4 рекомендуется.',
+   keys:['Только H.264 (нет H.265)','Ручное обновление через USB','Pi3: до 1080p; Pi4: 4K']},
+  {id:'bs', name:'BrightSign OS', sub:'FW 7.x / 8.x',           col:'#38bdf8', badge:'new',
+   oneLiner:'Профессиональные медиаплееры. Много ограничений.',
+   keys:['Синхронизация НЕ работает','Proof-of-play отключён','Только MicroSD, не USB flash']},
+];
+
+// ═══════════════════════════════════════
+//  CATEGORIES
+// ═══════════════════════════════════════
+const CATS={
+  hw:'Аппаратные требования',
+  content:'Воспроизведение контента',
+  wstd:'Виджеты — стандартные',
+  wpay:'Виджеты — платные',
+  wproj:'Виджеты — проектные',
+  touch:'Интерактив / Touch',
+  tmpl:'Шаблоны и трансляции',
+  sync:'Синхронизация / видеостена',
+  trg:'Триггеры и действия',
+  player:'Управление плеером',
+  ann:'Объявления',
+  va:'Видеоаналитика',
+  rep:'Отчёты',
+  net:'Сеть и интеграции',
+};
+const CO=Object.keys(CATS);
+const CC={hw:'#6080d0',content:'#3dd68c',wstd:'#a78bfa',wpay:'#d040a0',wproj:'#4090d0',touch:'#34d399',tmpl:'#50c0a0',sync:'#f0a030',trg:'#e06040',player:'#6090e0',ann:'#c07030',va:'#80b040',rep:'#7090d0',net:'#a090d0'};
+
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const D=[
+// HW
+['hw','ОС / минимальная версия',
+{a:'y|Android 5.0 мин., рек. 7.0+. По спец.запросу — 4.4 KitKat',w:'y|Windows 7 SP1 минимум, рек. 10/11. DirectX 11 обязателен',l:'y|Ubuntu 22.04 LTS / Astra 1.7 минимум. Рек. Ubuntu 24.04 / Astra 1.8',t:'y|Tizen 2.4 (SSSP4) минимум. SSSP10 (Tizen 6.5/7) — актуальный',o:'y|SSSP2 / SSSP3 — устаревшая платформа',wb:'y|WebOS 2.0+. Рек. 6.0 / 9.0. Бытовые панели НЕ работают',r:'y|Raspbian OS. Pi3 / Pi4 / Pi5 (поддержка с H2 2025)',bs:'y|BrightSign FW 7.x и 8.x. FW 5.x / 6.x — не работает. Только MicroSD'}],
+['hw','RAM / хранилище',
+{a:'y|RAM 1 GB мин, 2 GB рек. Flash 8 GB мин, 16 GB рек',w:'y|RAM 4 GB мин, 6 GB рек. Диск 35 GB мин, 100 GB рек',l:'y|RAM 4–6 GB мин, 8 GB+ рек. Диск 35 GB / 100 GB рек',t:'y|Встроенная SoC-память. USB для расширения',o:'y|Встроенная SoC-память',wb:'y|Встроенная SoC-память',r:'y|Pi3: 2GB RAM / 16GB SD. Pi4: 4GB+ / 32GB рек',bs:'p|Серии LS/HD: RAM 128 MB! Прочие: 512 MB. Хранилище = объём MicroSD'}],
+['hw','Режим 24/7',
+{a:'p|Зависит от модели. Ugoos, BenQ prof — OK. Дешёвые — уточнять',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'p|Pi4 — OK. Pi3 — возможен перегрев',bs:'y'}],
+['hw','Вертикальная ориентация',
+{a:'y|Некоторые Harper — только горизонталь (баг прошивки). Настройка через систему приставки',w:'y|Панель управления → Экран → Ориентация',l:'y',t:'y|Настройка при первичной конфигурации',o:'n|ТОЛЬКО горизонтальная ориентация. Жёсткое аппаратное ограничение SSSP2/3',wb:'y|Альбомная/книжная — при первичной настройке',r:'y',bs:'p|Зависит от EDID дисплея. Прямого управления из ЛК нет'}],
+['hw','Видеокарты Matrox',
+{a:'n',w:'p|Требует специальную сборку SmartPlayer — запрашивать у менеджера',l:'u',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['hw','HDMI CEC (управление ТВ)',
+{a:'n|HDMI CEC не поддерживается. Для управления ТВ — использовать RS232',w:'n|Аналогично',l:'n',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['hw','Wake-on-LAN (удалённое включение)',
+{a:'y|Включение устройства из выключенного состояния по сети',w:'y',l:'y',t:'p|Зависит от модели панели',o:'p',wb:'p|Зависит от модели',r:'y',bs:'u'}],
+
+// CONTENT
+['content','Видео H.264',
+{a:'y',w:'y',l:'y',t:'y|MP4 High Profile L4.1, 1920×1080, до 30fps',o:'y|MP4 H.264. Файл ≤ 1–1.5 ГБ',wb:'y',r:'y|H.264/mp42/mp41',bs:'y|Макс. битрейт 95 Мбит/с для стабильной работы'}],
+['content','Видео H.265 (HEVC)',
+{a:'p|Зависит от декодера устройства. Нет гарантии',w:'y',l:'y|Поддерживается',t:'n|Tizen не поддерживает H.265',o:'n',wb:'u',r:'n|Pi не поддерживает H.265 аппаратно',bs:'u'}],
+['content','Видео 4K (3840×2160)',
+{a:'p|Строго зависит от аппаратного декодера модели. Уточнять!',w:'y|i5 6-ядер+ 2.7GHz, GPU 6GB+ VRAM',l:'y|i5+, GPU 6GB VRAM',t:'p|SSSP6+ — отдельные модели. SSSP4/5 — как правило нет',o:'n|Платформа не поддерживает 4K',wb:'y|До UHD',r:'p|Pi4 — 1 видео 4K. Pi3 — только 1080p. Pi5 — да',bs:'p|Только серия XT поддерживает 4K. HD/LS/4K/XD — автоконверт в Full HD'}],
+['content','Видео 8K (7680×4320)',
+{a:'n',w:'y|i5+, RAM 12GB+, GPU 16GB+ VRAM',l:'p|На мощном железе — теоретически',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['content','Изображения (JPG, PNG, WebP)',
+{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['content','Аудио / фоновая музыка',
+{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'p|В режиме синхронизации аудио НЕ синхронизируется',r:'y',bs:'p|Громкость задаётся на контент, не на устройство'}],
+['content','PDF как контент',
+{a:'y',w:'y',l:'y',t:'p|SSSP4 (Tizen 2.4) — НЕТ! SSSP5+ (Tizen 3.0+) — работает',o:'u',wb:'y',r:'y',bs:'y'}],
+['content','Потоковое видео RTSP',
+{a:'y|Через VLC. Пресеты: NetUP, Ugoos1/2, ручные',w:'y|С v1.84.3+. VLC-параметры через ЛК',l:'y',t:'n|Tizen принципиально не поддерживает RTSP! Критично для сценариев с IP-камерами — переводить клиента на HLS',o:'n',wb:'y',r:'y',bs:'y|Все форматы потоков'}],
+['content','HLS / UDP / RTP',
+{a:'y|ExoPlayer. MPEG-TS + H.264 рекомендуется',w:'y',l:'y',t:'y|Только HLS/UDP. Без RTSP',o:'u',wb:'y',r:'y',bs:'y'}],
+['content','IPTV (ТВ-каналы)',
+{a:'y',w:'y',l:'y',t:'p|Только HLS/UDP',o:'u',wb:'y',r:'y',bs:'n|IPTV НЕ поддерживается на BrightSign OS'}],
+['content','Одновременно несколько видеозон',
+{a:'p|Зависит от декодера модели — нет общей цифры',w:'y|4× Full HD / 2× 4K / 1× 8K (производительная конфигурация)',l:'p|До 2× Full HD при рекомендуемом железе',t:'p|Видео всегда рендерится на нижнем слое — 2-я видеозона перекроется',o:'p|Ограниченное количество зон',wb:'p|WebOS 6.0: не >1 видео с чересстрочной развёрткой',r:'p|Pi3: 1× 1080p. Pi4: 1× 4K или несколько 1080p',bs:'p|XT/4K/XD: 2 видео. HD/LS: только 1 видео в момент'}],
+['content','Статистика Proof of Play',
+{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Proof-of-Play ОТКЛЮЧЕНА на BrightSign OS — не поддерживается платформой'}],
+
+// WSTD
+['wstd','Виджет: текст',{a:'y',w:'y',l:'y',t:'y',o:'p|Ограниченное форматирование',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: дата/время, часы, обратный отсчёт',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'p|Своя логика таймзон по смещению UTC (moment.js ограничение)'}],
+['wstd','Виджет: погода (базовый + расширенный)',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: RSS-лента',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: пробки, курсы валют, нефть',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: QR-код',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: QR Remote Control',{a:'y',w:'y',l:'y',t:'y',o:'n|Не поддерживается Orsay',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: данные JSON/XML',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: Google Таблицы',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: веб-страница (URL)',{a:'y',w:'y',l:'y',t:'y',o:'p|Старый движок — сложные HTML5/CSS3 могут не работать',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: HTML (raw)',{a:'y',w:'y',l:'y',t:'y',o:'p|Ограниченная поддержка HTML5',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: веб-проект / YouTube',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: PDF / PPT-презентация',{a:'y',w:'y',l:'y',t:'p|PDF: SSSP4 — нет; SSSP5+ — да. PPT — работает',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: форма / опрос / оценка',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: бронирование',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: кассовый чек / цены',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: авторизация / памятные даты',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: захват камеры (USB/IP)',{a:'y',w:'y',l:'y',t:'p|Ограниченно — уточнять по модели',o:'n',wb:'p',r:'y',bs:'u'}],
+['wstd','Виджет: видеозвонок',{a:'y',w:'y',l:'y',t:'p',o:'n',wb:'p',r:'y',bs:'u'}],
+['wstd','Виджет: Folder Play (локальный / сеть / GDrive / FTPS)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+
+// WPAY
+['wpay','Виджет: Табло авиарейсов',{a:'y',w:'y',l:'y',t:'p',o:'u',wb:'p',r:'y',bs:'u'}],
+['wpay','Виджет: Электронная очередь',{a:'y',w:'y',l:'y',t:'p',o:'u',wb:'p',r:'y',bs:'u'}],
+
+// WPROJ
+['wproj','Виджет: Динамические цены (POS)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wproj','Виджет: Навигация / Каталог',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wproj','Виджет: Фотобудка',{a:'y',w:'y',l:'y',t:'p',o:'n',wb:'p',r:'y',bs:'u'}],
+['wproj','Виджет: Винный сомелье',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wproj','Собственный виджет (Widget API)',{a:'y',w:'y',l:'y',t:'p|Ограничения движка Tizen',o:'n|Движок слишком старый',wb:'y',r:'y',bs:'y'}],
+['wproj','RFID Touch & Watch',{a:'n',w:'y|Реализовано ТОЛЬКО для Windows',l:'n',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+
+// TOUCH
+['touch','Интерактивные трансляции (киоски, столы)',{a:'y|Требуется лицензия Smart Touch',w:'y|Требуется Smart Touch',l:'y|Требуется Smart Touch',t:'y|Требуется Smart Touch',o:'p|Ограниченно',wb:'y|Требуется Smart Touch',r:'y|Требуется Smart Touch',bs:'p|Ограниченно'}],
+['touch','Pull & Learn (внешние сенсоры)',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+['touch','Навигационные инсталляции',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+
+// TMPL
+['tmpl','Однозонная трансляция',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['tmpl','Мультизонная трансляция',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'p|WebOS 2.0 — НЕТ мультизон. WebOS 3.0+ — работает',r:'y',bs:'p'}],
+['tmpl','Анимации (Fade / Slider)',{a:'y',w:'y',l:'y',t:'n|Анимации в трансляциях НЕ поддерживаются Tizen вообще — ни эффекты смены, ни CSS-анимации',o:'n',wb:'y',r:'y',bs:'y'}],
+['tmpl','Слои (видео + виджет поверх)',{a:'y',w:'y',l:'y',t:'p|Видео Tizen ВСЕГДА на нижнем слое — видеозону нужно делать первой',o:'p|Аналогично',wb:'y',r:'y',bs:'p|Логические 1920×1080 vs физические координаты'}],
+['tmpl','Отложенная публикация',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['tmpl','Таргетированные публикации',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['tmpl','Случайный порядок контента',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['tmpl','Обновление без перезапуска шаблона',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['tmpl','SmartFolder (авто-обновление из папки)',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+
+// SYNC
+['sync','Синхронизация внутри одного плеера',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Синхронизация НЕ работает на BrightSign OS (в разработке)'}],
+['sync','Синхронизация по LAN — видеостена',
+{a:'p|Ethernet обязателен. Только MP4 H.264. Одинаковые fps / разрешение / битрейт. Длительность ≥ 6 сек. Аудио только на одном устройстве. Одинаковые прошивки. Допуск: Ethernet 100 мс, Wi-Fi 150 мс',
+w:'p|Ethernet рекомендован. Multicast UDP: 239.255.43.21 (IPv4) / ff12::2115 (IPv6) — адреса должны быть доступны в сети. Только видео',
+l:'p|Аналогично Windows — общий модуль синхронизации с Windows/Raspberry',
+t:'p|Ethernet обязателен. Длительность = строго целые секунды (не 10.34!). Одинаковые fps',
+o:'p|Только горизонталь. Файл ≤ 1.5 ГБ',
+wb:'p|Ethernet обязателен. 1 зона + 1 страница. Целые секунды. Порядок перезагрузки: сначала мастер, потом остальные — строго!',
+r:'p|Ethernet обязателен. Общий модуль с Windows/Linux. Одинаковые модели рекомендуются',
+bs:'n|Режим синхронизации и видеостены НЕ работает на BrightSign OS'}],
+['sync','Синхронизация многозонных трансляций',{a:'y',w:'y',l:'y',t:'y',o:'n',wb:'n|Только однозонные!',r:'y',bs:'n'}],
+['sync','Web-виджеты и PDF в синхронизации',{a:'p|Только по старту и финишу, не по состоянию',w:'p',l:'p',t:'n|Только видео',o:'n',wb:'n',r:'p',bs:'n'}],
+
+// TRG
+['trg','Триггер: таймер (точное / периодично)',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['trg','Триггер: прикосновение (touch)',{a:'y',w:'y',l:'y',t:'y',o:'n|SSSP2/3 не поддерживает touch',wb:'y',r:'y',bs:'p'}],
+['trg','Триггер: RTSP (IP-камера)',{a:'y',w:'y',l:'y',t:'n|RTSP не работает на Tizen',o:'n',wb:'y',r:'y',bs:'y'}],
+['trg','Триггер: UDP-сообщение',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Триггер: GPIO',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Триггер: сканер (QR/штрихкод)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Триггер: распознавание лиц',{a:'y',w:'y',l:'y',t:'p',o:'u',wb:'p',r:'y',bs:'n'}],
+['trg','Триггер: COM / RS-232 / RS-485',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Триггер: начало / окончание воспроизведения',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['trg','Действие: блюр / пауза / старт',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Действие: RS / UDP команда',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['trg','Действие: email / захват камеры',{a:'y',w:'y',l:'y',t:'p',o:'n',wb:'p',r:'y',bs:'n'}],
+
+// PLAYER
+['player','Режим киоска',{a:'y|Выход: долгое нажатие в верхнем правом углу → пароль 95224. С пульта: ENTER→BACK→BACK→LEFT (7 сек)',w:'y|Выход: Ctrl+F12',l:'y|Выход: Ctrl+F12',t:'y',o:'y',wb:'y',r:'y|Выход: Ctrl+F12',bs:'u'}],
+['player','Перезагрузка удалённо',{a:'p|Android 7.0+ + Device Owner / Signature / Root. Обычный режим — НЕДОСТУПНО',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['player','Обновление SmartPlayer удалённо',{a:'p|Device Owner / Signature / Root. В обычном режиме — только физически',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'p|Ручное через USB+терминал',bs:'y|С v1.3.0+ через сервер SmartPlayer'}],
+['player','Скриншот экрана',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['player','Скриншот с видеоролика',{a:'p|Требует РУЧНОЙ выдачи разрешения на устройстве. Удалённо через ЛК нельзя выдать',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['player','Обновление прошивки панели',{a:'n',w:'n',l:'n',t:'y|Через ЛК → Устройства → Обновление',o:'y',wb:'y',r:'p',bs:'y|Автоматически при начальной настройке если на сервере'}],
+['player','Таймер вкл/выкл дисплея',{a:'p|Нужен Device Owner / Signature / Root',w:'y',l:'p|Wayland может мешать. Переключить на X11: sudo nano /etc/gdm3/custom.conf → WaylandEnable=false',t:'w|Tizen 7 (SSSP10) — таймер ВРЕМЕННО НЕ РАБОТАЕТ (баг, апрель 2026). Tizen 2.4–6.5 — OK',o:'y',wb:'y',r:'y',bs:'n|Удалённое вкл/выкл дисплея НЕ поддерживается. Яркость — только на устройстве'}],
+['player','Регулировка яркости удалённо',{a:'p|Зависит от устройства и прав',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Ползунка яркости нет — только на устройстве'}],
+['player','HTTPS + самоподписные SSL',{a:'y',w:'y',l:'y',t:'n|Tizen НЕ доверяет самоподписным — только trusted list (GlobalSign)',o:'n',wb:'y',r:'y',bs:'p'}],
+['player','Системная громкость удалённо',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Громкость задаётся на контент, а не системно'}],
+['player','Таймзона удалённо',{a:'p|Android 9.0+ + Device Owner / Signature / Root',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'p|Своя логика — выбор по смещению UTC, не по названию'}],
+['player','Proxy-подключение',{a:'p',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Proxy НЕ поддерживается на BrightSign (в разработке)'}],
+['player','Режим Device Owner (Android)',{a:'p|Обычный режим ограничен. Device Owner — полное управление, но сложен массово. Signature — лучший (производитель подписывает). Root — максимум, риски безопасности',w:'n',l:'n',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['player','Отладка виджетов (DevTools)',{a:'u',w:'y|С v2.48.0+. SmartPlayer.exe --remote-debugging-port=9223',l:'y|С v2.48.0+. В SmartPlayer.sh: --remote-debugging-port=9224',t:'u',o:'n',wb:'u',r:'y|С v2.48.0+. Порт 9224',bs:'y|Diagnostic Web Server (DWS) на порту 80 устройства'}],
+['player','Коммерческие (бытовые) панели LG',{a:'n',w:'n',l:'n',t:'n',o:'n',wb:'n|Бытовые (consumer) панели LG НЕ поддерживаются вообще — нет API для стороннего ПО. Только professional / hospitality серии',r:'n',bs:'n'}],
+['player','Поддержка 2+ HDMI выходов',{a:'n',w:'p|Через настройки Windows/видеокарты',l:'p|Через X11/Wayland',t:'n',o:'n',wb:'n',r:'n',bs:'y|С v1.10.17+. Устройства с 2× HDMI (XT2145). Автоопределение по EDID'}],
+['player','Оффлайн-работа (без интернета)',{a:'y|Контент, расписания, статистика — всё локально. Синхронизация при подключении',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+
+// NET
+['net','Управление через API / интеграции',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'y'}],
+['net','Ограничение скорости загрузки',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['net','Surface/Textures/VLC рендеринг (Android-специфика)',{a:'y|3 варианта отрисовки: surface (лёгкий), textures (тяжёлый, лучше графика), vlc_layout (автовыбор)',w:'n',l:'n',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['net','Дистрибутивы в ЛК (скачать клиент)',{a:'y',w:'y',l:'y|Astra Linux 1.7/1.8 — в ЛК',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+
+// ANN
+['ann','Объявления — создание/публикация',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+['ann','Типы: "Между контентом", "В определённое время", "Рекламщики"',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+['ann','Контент: видео + фото',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+['ann','Контент: аудио (дополнительно)',{a:'y|ТОЛЬКО Android поддерживает аудио в объявлениях',w:'n',l:'n',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['ann','Требование: трансляция с расписанием обязательна',{a:'p|Без расписания создать объявление нельзя',w:'p',l:'p',t:'p',o:'p',wb:'p',r:'p',bs:'u'}],
+['ann','Требование: 1 зона / 1 страница',{a:'p|Многозонное / многостраничное расписание — блок создания объявления',w:'p',l:'p',t:'p',o:'p',wb:'p',r:'p',bs:'u'}],
+['ann','Применение к офлайн-устройствам',{a:'y|Работает и с онлайн, и с офлайн — данные синхронизируются при подключении',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+
+// VA
+['va','NtechLab (распознавание лиц, платный)',{a:'n',w:'u',l:'y|Ubuntu OS. Платная лицензия',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['va','OpenVino (Intel NUC, бесплатный)',{a:'n',w:'y|Win 10. Оптимизирован под Intel NUC',l:'y|Ubuntu. Бесплатный',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['va','OpenCV (бесплатный, менее точный)',{a:'n',w:'y|Win 10',l:'y|Ubuntu',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['va','Смена контента по полу/возрасту',{a:'n',w:'y|Пол, возраст, дата/время фиксации',l:'y',t:'n',o:'n',wb:'n',r:'n',bs:'n'}],
+['va','Тепловые карты посещаемости',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'n'}],
+
+// REP
+['rep','Proof of Play — детальный отчёт',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'n|Отключено на BrightSign'}],
+['rep','Отчёт по загрузке контента',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['rep','Статус плееров (онлайн/офлайн)',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['rep','Фотоотчёт (скриншоты по расписанию)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['rep','Результаты опросов / форм',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'u'}],
+['rep','Эфирная справка',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'u'}],
+['rep','MAC-адреса устройств',{a:'n|Считывание MAC запрещено в Android 10+. До Android 10 — возможно. Ограничение Google API',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['rep','Отчёт по инвентарю',{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
+['rep','Детектор чёрного экрана',{a:'y|С v1.11. Android 7+',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+['rep','Мониторинг ресурсов (RAM/CPU/диск/TZ)',{a:'y',w:'y',l:'y',t:'y',o:'p',wb:'y',r:'y',bs:'u'}],
+];
+
+// ═══════════════════════════════════════
+//  CLIENT SCENARIOS (for Dashboard)
+// ═══════════════════════════════════════
+const SCENARIOS=[
+{emoji:'📺', title:'Видеостена 4+ экранов',
+ answer:'Синхронизация работает только на Windows, Linux, Android и Raspberry. Обязателен проводной Ethernet, строгие требования к контенту. BrightSign — НЕ умеет синхронизацию.',
+ best:['w','l'], ok:['a','t','wb','r'], no:['o','bs']},
+{emoji:'🏪', title:'Ритейл с динамическими ценами',
+ answer:'Требует POS-интеграцию (проектный виджет). Лучше всего — Android приставки с RFID/сканером, либо Windows с WC Matrox для особо сложных экранов. Samsung Tizen — без RTSP для видео.',
+ best:['a','w','l'], ok:['t','wb','r'], no:['o','bs']},
+{emoji:'📱', title:'Интерактивный touch-киоск',
+ answer:'Требует лицензию Smart Touch (отдельно). Android — лучший вариант по цене/возможностям. Samsung Orsay — touch НЕ работает. BrightSign — ограниченная интерактивность.',
+ best:['a','w','l'], ok:['t','wb','r'], no:['o']},
+{emoji:'📡', title:'IP-камера / RTSP-поток',
+ answer:'Критично: Tizen и Orsay принципиально НЕ поддерживают RTSP. Предлагать клиенту HLS как альтернативу, либо Android/Windows/Linux.',
+ best:['a','w','l','r'], ok:['wb','bs'], no:['t','o']},
+{emoji:'🏨', title:'Отели / hospitality',
+ answer:'LG WebOS — идеальный вариант (hospitality серия). Важно: коммерческие (бытовые) LG НЕ работают! Samsung Tizen — тоже подходит для проф.панелей.',
+ best:['wb','t'], ok:['a','w'], no:['o']},
+{emoji:'👥', title:'Распознавание лиц / аналитика',
+ answer:'Видеоаналитика — ТОЛЬКО Windows и Linux. NtechLab платный, OpenVino и OpenCV бесплатные. Мобильные платформы не поддерживают.',
+ best:['w','l'], ok:[], no:['a','t','o','wb','r','bs']},
+];
+
+// ═══════════════════════════════════════
+//  CRITICAL RED FLAGS (for Dashboard)
+// ═══════════════════════════════════════
+const FLAGS=[
+{plat:'Samsung Tizen', title:'RTSP не поддерживается вообще', desc:'Платформа принципиально не умеет RTSP-протокол. Для IPTV или IP-камер предлагать клиенту HLS.', severity:'n'},
+{plat:'LG WebOS', title:'Бытовые (consumer) панели НЕ работают', desc:'SmartPlayer невозможно установить на потребительские LG TV. Только professional и hospitality серии.', severity:'n'},
+{plat:'Samsung Tizen', title:'Анимации в трансляциях не работают', desc:'Ни эффекты смены, ни CSS-анимации — фиксированное ограничение платформы. Уточнять у клиента перед продажей.', severity:'n'},
+{plat:'BrightSign OS', title:'Синхронизация / видеостена не работает', desc:'Критично для проектов с несколькими экранами. На BrightSign можно делать только одиночные плееры.', severity:'n'},
+{plat:'Samsung Tizen (SSSP10)', title:'Баг таймера вкл/выкл дисплея', desc:'Tizen 7 — временно не работает удалённое управление дисплеем. Известный баг на апрель 2026.', severity:'w'},
+{plat:'Android 10+', title:'MAC-адрес не считывается', desc:'Google закрыл API. В отчётах MAC будет пустым. Для инвентаря использовать serial number или имя устройства.', severity:'n'},
+{plat:'Samsung Tizen', title:'Самоподписные SSL-сертификаты', desc:'Tizen не доверяет — только из trusted list. Рекомендуется GlobalSign. Настраивать до развёртывания.', severity:'n'},
+{plat:'Samsung Orsay', title:'Только горизонтальная ориентация', desc:'Вертикальный экран на SSSP2/3 невозможен — жёсткое аппаратное ограничение.', severity:'n'},
+{plat:'LG WebOS 2.0', title:'Мультизонность не работает', desc:'Только однозонные трансляции. На WebOS 3.0+ — всё ок.', severity:'n'},
+{plat:'Android (обычный режим)', title:'Без Device Owner — ограниченное управление', desc:'Перезагрузка, обновление SmartPlayer, таймеры — требуют Device Owner / Signature / Root. В обычном режиме — только физическое обслуживание.', severity:'p'},
+{plat:'BrightSign OS', title:'Proof-of-Play отключён', desc:'Статистика показов не ведётся платформой. Для рекламной сети — не подходит.', severity:'n'},
+{plat:'Raspberry Pi', title:'H.265 не поддерживается', desc:'Только H.264. Pi аппаратно не декодирует HEVC — все ролики H.265 придётся перекодировать.', severity:'n'},
+];
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let state={
+  view:'dash',
+  collapsed:{},
+  activeCats:new Set(CO),
+  issueMode:false,
+  search:'',
+  selectedPlat:null,
+};
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function ps(v){if(!v)return{s:'u',note:''};const i=v.indexOf('|');if(i<0)return{s:v.trim(),note:''};return{s:v.slice(0,i).trim(),note:v.slice(i+1).trim()};}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+const SL={y:'Да',p:'Частично',n:'Нет',u:'N/A',w:'Баг!'};
+const SI={y:'✓',p:'~',n:'✗',u:'?',w:'!'};
+const SLBL={y:'✓ Работает полностью',p:'~ Частично / с ограничениями',n:'✗ Не поддерживается',u:'? Нет данных',w:'! Баг / временно не работает'};
+
+function countsByPlat(platId){
+  let y=0,p=0,n=0,u=0;
+  D.forEach(f=>{const v=ps(f[2][platId]);if(v.s==='y')y++;else if(v.s==='p'||v.s==='w')p++;else if(v.s==='n')n++;else u++;});
+  return {y,p,n,u,total:y+p+n+u};
+}
+
+function countsByCat(cat,platId){
+  let y=0,p=0,n=0;
+  D.filter(f=>f[0]===cat).forEach(f=>{const v=ps(f[2][platId]);if(v.s==='y')y++;else if(v.s==='p'||v.s==='w')p++;else if(v.s==='n')n++;});
+  return {y,p,n};
+}
+
+// ═══════════════════════════════════════
+//  VIEW SWITCHING
+// ═══════════════════════════════════════
+function switchView(v){
+  state.view=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));
+  if(v==='matrix'&&!window._matrixRendered){renderMatrix();window._matrixRendered=true;}
+  if(v==='platforms')backToList();
+  window.scrollTo(0,0);
+  closePanel();
+}
+
+// ═══════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════
+function renderDashboard(){
+  // hero stats
+  document.getElementById('hs-feat').textContent=D.length;
+  document.getElementById('hs-cats').textContent=Object.keys(CATS).length;
+  let issues=0;
+  D.forEach(f=>{PLATS.forEach(p=>{const v=ps(f[2][p.id]);if(v.s==='n'||v.s==='w')issues++;});});
+  document.getElementById('hs-issues').textContent=issues;
+
+  // platform grid
+  const grid=document.getElementById('dash-pgrid');
+  grid.innerHTML='';
+  PLATS.forEach(p=>{
+    const c=countsByPlat(p.id);
+    const total=c.y+c.p+c.n;
+    const yPct=(c.y/total)*100;
+    const pPct=(c.p/total)*100;
+    const nPct=(c.n/total)*100;
+    const badgeLabel={stable:'STABLE',legacy:'LEGACY',new:'SUPPORTED'}[p.badge];
+    const card=document.createElement('div');card.className='pcard';card.style.setProperty('--pcolor',p.col);
+    card.onclick=()=>{switchView('platforms');setTimeout(()=>showPlatformDetail(p.id),50);};
+    card.innerHTML=`
+      <div class="pcard-head">
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-badge ${p.badge}">${badgeLabel}</div>
+      </div>
+      <div class="pcard-sub">${p.sub}</div>
+      <div class="pcard-bar">
+        <div class="pcard-bar-y" style="width:${yPct}%"></div>
+        <div class="pcard-bar-p" style="width:${pPct}%"></div>
+        <div class="pcard-bar-n" style="width:${nPct}%"></div>
+      </div>
+      <div class="pcard-stats">
+        <div class="pcard-stat"><span style="color:var(--y)">●</span><b>${c.y}</b>работает</div>
+        <div class="pcard-stat"><span style="color:var(--p)">●</span><b>${c.p}</b>частично</div>
+        <div class="pcard-stat"><span style="color:var(--n)">●</span><b>${c.n}</b>нет</div>
+      </div>
+      <div class="pcard-tip">
+        <div class="pcard-tip-label">Ключевое</div>
+        ${p.oneLiner}
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // scenarios
+  const sc=document.getElementById('dash-scenarios');
+  sc.innerHTML='';
+  SCENARIOS.forEach(s=>{
+    const bestPlats=s.best.map(id=>PLATS.find(p=>p.id===id)).filter(Boolean);
+    const okPlats=s.ok.map(id=>PLATS.find(p=>p.id===id)).filter(Boolean);
+    const noPlats=s.no.map(id=>PLATS.find(p=>p.id===id)).filter(Boolean);
+    const d=document.createElement('div');d.className='scen';
+    d.innerHTML=`
+      <div class="scen-head"><div class="scen-emoji">${s.emoji}</div><div class="scen-title">${s.title}</div></div>
+      <div class="scen-answer">${s.answer}</div>
+      <div class="scen-plats">
+        ${bestPlats.map(p=>`<span class="scen-plat best">✓ ${p.name}</span>`).join('')}
+        ${okPlats.map(p=>`<span class="scen-plat ok">~ ${p.name}</span>`).join('')}
+        ${noPlats.map(p=>`<span class="scen-plat no">✗ ${p.name}</span>`).join('')}
+      </div>`;
+    sc.appendChild(d);
+  });
+
+  // flags
+  const fl=document.getElementById('dash-flags');
+  fl.innerHTML='';
+  FLAGS.forEach(f=>{
+    const cls=f.severity==='w'?'bug':(f.severity==='p'?'warn':'');
+    const d=document.createElement('div');d.className='flag '+cls;
+    d.innerHTML=`
+      <div class="flag-head"><div class="flag-plat">${f.plat}</div></div>
+      <div class="flag-title">${f.title}</div>
+      <div class="flag-desc">${f.desc}</div>`;
+    fl.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════
+//  MATRIX
+// ═══════════════════════════════════════
+function renderMatrix(){
+  // header
+  const hr=document.getElementById('hr');
+  PLATS.forEach(p=>{
+    const th=document.createElement('th');th.style.setProperty('--pcolor',p.col);
+    th.innerHTML=`<div class="thp"><span class="pn">${p.name}${p.badge==='new'?'<span class="new-badge">SUPP</span>':''}</span><span class="ps2">${p.sub}</span></div>`;
+    hr.appendChild(th);
+  });
+  // category filter
+  const cf=document.getElementById('cat-filter');
+  CO.forEach(cat=>{
+    const btn=document.createElement('button');btn.className='cat-chip on';btn.dataset.cat=cat;
+    btn.style.setProperty('--ccol',CC[cat]);
+    btn.innerHTML=`<span class="cat-chip-dot"></span>${CATS[cat]}`;
+    btn.onclick=()=>{
+      if(state.activeCats.has(cat)){state.activeCats.delete(cat);btn.classList.remove('on');}
+      else{state.activeCats.add(cat);btn.classList.add('on');}
+      renderMatrixBody();
+    };
+    cf.appendChild(btn);
+  });
+  renderMatrixBody();
+}
+
+function renderMatrixBody(){
+  const tb=document.getElementById('tb');tb.innerHTML='';
+  const q=state.search.toLowerCase();
+  let cur=null;
+  D.forEach(feat=>{
+    const[cat,name,stats]=feat;
+    if(!state.activeCats.has(cat))return;
+    if(state.issueMode){
+      const hi=PLATS.some(p=>{const v=ps(stats[p.id]);return v.s==='p'||v.s==='n'||v.s==='w';});
+      if(!hi)return;
+    }
+    if(q){
+      const m=name.toLowerCase().includes(q)||PLATS.some(p=>{const v=ps(stats[p.id]);return v.note.toLowerCase().includes(q);});
+      if(!m)return;
+    }
+    if(cat!==cur){
+      cur=cat;
+      const cr=document.createElement('tr');cr.className='crow';cr.dataset.cat=cat;
+      const td=document.createElement('td');td.colSpan=PLATS.length+1;
+      td.innerHTML=`<span class="ct">${state.collapsed[cat]?'▶':'▼'}</span><span style="color:${CC[cat]}">${CATS[cat]}</span>`;
+      td.onclick=()=>{
+        state.collapsed[cat]=!state.collapsed[cat];
+        document.querySelectorAll(`.fr[data-cat="${cat}"]`).forEach(r=>r.classList.toggle('gone',state.collapsed[cat]));
+        td.querySelector('.ct').textContent=state.collapsed[cat]?'▶':'▼';
+      };
+      cr.appendChild(td);tb.appendChild(cr);
+    }
+    const tr=document.createElement('tr');tr.className='fr';tr.dataset.cat=cat;
+    if(state.collapsed[cat])tr.classList.add('gone');
+    const ntd=document.createElement('td');ntd.className='fn';
+    let tags='';
+    if(cat==='wpay')tags+='<span class="tag t-pay">платный</span>';
+    if(cat==='wproj')tags+='<span class="tag t-proj">проектный</span>';
+    ntd.innerHTML=name+tags;
+    tr.appendChild(ntd);
+    PLATS.forEach(p=>{
+      const td=document.createElement('td');td.className='sc';
+      const v=ps(stats[p.id]);
+      const chip=document.createElement('span');chip.className=`chip ${v.s}${v.note?' has-note':''}`;
+      chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${SL[v.s]}</span>`;
+      chip.onclick=(e)=>{e.stopPropagation();showPanel(p.name,name,v.note,v.s);};
+      td.appendChild(chip);tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+}
+
+function toggleIssues(){
+  state.issueMode=!state.issueMode;
+  document.getElementById('issues-btn').classList.toggle('on',state.issueMode);
+  renderMatrixBody();
+}
+function expandAll(){state.collapsed={};renderMatrixBody();}
+function collapseAll(){CO.forEach(c=>state.collapsed[c]=true);renderMatrixBody();}
+function resetFilter(){
+  state.issueMode=false;state.search='';state.collapsed={};state.activeCats=new Set(CO);
+  document.getElementById('issues-btn').classList.remove('on');
+  document.getElementById('si').value='';
+  document.querySelectorAll('.cat-chip').forEach(b=>b.classList.add('on'));
+  renderMatrixBody();
+}
+
+// ═══════════════════════════════════════
+//  PLATFORMS DEEP DIVE
+// ═══════════════════════════════════════
+function renderPlatforms(){
+  const g=document.getElementById('plat-big-grid');g.innerHTML='';
+  PLATS.forEach(p=>{
+    const c=countsByPlat(p.id);
+    const card=document.createElement('div');card.className='plat-big';card.style.setProperty('--pcolor',p.col);
+    card.onclick=()=>showPlatformDetail(p.id);
+    card.innerHTML=`
+      <div class="plat-big-head">
+        <div>
+          <div class="plat-big-title">${p.name}${p.badge==='new'?'<span class="new-badge" style="margin-left:8px;">SUPPORTED</span>':''}</div>
+          <div class="plat-big-sub">${p.sub}</div>
+        </div>
+      </div>
+      <div class="plat-big-stats">
+        <div><div class="plat-big-sv y">${c.y}</div><div class="plat-big-sl">Работает</div></div>
+        <div><div class="plat-big-sv p">${c.p}</div><div class="plat-big-sl">Частично</div></div>
+        <div><div class="plat-big-sv n">${c.n}</div><div class="plat-big-sl">Нет</div></div>
+      </div>
+      <div class="plat-big-section">
+        <div class="plat-big-label">О платформе</div>
+        <div class="plat-big-list"><span>${p.oneLiner}</span></div>
+      </div>
+      <div class="plat-big-section">
+        <div class="plat-big-label">Ключевые моменты</div>
+        <div class="plat-big-list">${p.keys.map(k=>`<span>• ${k}</span>`).join('')}</div>
+      </div>`;
+    g.appendChild(card);
+  });
+}
+
+function showPlatformDetail(platId){
+  state.selectedPlat=platId;
+  const p=PLATS.find(x=>x.id===platId);
+  document.getElementById('platforms-list').style.display='none';
+  const dv=document.getElementById('platform-detail');dv.classList.add('active');
+  const c=document.getElementById('platform-detail-content');
+  const cnt=countsByPlat(platId);
+  const badgeLabel={stable:'STABLE',legacy:'LEGACY · УСТАРЕВШАЯ',new:'ПОДДЕРЖИВАЕТСЯ'}[p.badge];
+
+  let html=`
+    <div class="plat-detail-hero" style="--pcolor:${p.col}">
+      <div class="plat-detail-title">${p.name} <span class="pcard-badge ${p.badge}" style="vertical-align:middle;font-size:10px;margin-left:8px;">${badgeLabel}</span></div>
+      <div class="plat-detail-sub">${p.sub} · ${p.oneLiner}</div>
+      <div class="plat-detail-grid">
+        <div class="plat-detail-met"><div class="plat-detail-met-v" style="color:var(--y)">${cnt.y}</div><div class="plat-detail-met-l">Работает</div></div>
+        <div class="plat-detail-met"><div class="plat-detail-met-v" style="color:var(--p)">${cnt.p}</div><div class="plat-detail-met-l">Частично</div></div>
+        <div class="plat-detail-met"><div class="plat-detail-met-v" style="color:var(--n)">${cnt.n}</div><div class="plat-detail-met-l">Не поддерживается</div></div>
+        <div class="plat-detail-met"><div class="plat-detail-met-v">${cnt.u}</div><div class="plat-detail-met-l">Нет данных</div></div>
+      </div>
+    </div>
+    <div class="plat-detail-cats">`;
+
+  CO.forEach(cat=>{
+    const feats=D.filter(f=>f[0]===cat);
+    const cntC=countsByCat(cat,platId);
+    html+=`<div class="plat-detail-cat">
+      <div class="plat-detail-cat-head">
+        <div class="plat-detail-cat-title"><span class="plat-detail-cat-dot" style="background:${CC[cat]}"></span>${CATS[cat]}</div>
+        <div class="plat-detail-cat-counts">
+          <span class="y">✓ ${cntC.y}</span>
+          <span class="p">~ ${cntC.p}</span>
+          <span class="n">✗ ${cntC.n}</span>
+        </div>
+      </div>`;
+    feats.forEach((f,idx)=>{
+      const[,name,stats]=f;const v=ps(stats[platId]);
+      const dataIdx=D.indexOf(f);
+      html+=`<div class="plat-detail-feat">
+        <div>
+          <div class="plat-detail-feat-name">${esc(name)}</div>
+          ${v.note?`<div class="plat-detail-feat-note">${esc(v.note)}</div>`:''}
+        </div>
+        <span class="chip ${v.s}" data-didx="${dataIdx}" data-plat="${platId}" role="button"><span class="chip-icon">${SI[v.s]}</span>${SL[v.s]}</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+
+  c.innerHTML=html;
+  // Attach click handlers safely via delegation
+  c.querySelectorAll('.plat-detail-feat .chip[data-didx]').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const didx=parseInt(chip.dataset.didx,10);
+      const platId=chip.dataset.plat;
+      const feat=D[didx];if(!feat)return;
+      const v=ps(feat[2][platId]);
+      const pl=PLATS.find(x=>x.id===platId);
+      showPanel(pl.name,feat[1],v.note,v.s);
+    });
+  });
+  window.scrollTo(0,0);
+}
+
+function backToList(){
+  state.selectedPlat=null;
+  document.getElementById('platforms-list').style.display='block';
+  document.getElementById('platform-detail').classList.remove('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════
+//  SIDE PANEL
+// ═══════════════════════════════════════
+function showPanel(plat,feat,note,s){
+  document.getElementById('pp').textContent=plat;
+  document.getElementById('pf').textContent=feat;
+  const st=document.getElementById('pst');st.className='';st.classList.add(s);st.textContent=SLBL[s]||s;
+  const nn=document.getElementById('pn');
+  if(note){
+    const parts=note.replace(/\. ([А-ЯA-Z])/g,'.\n$1').split('\n').filter(x=>x.trim());
+    if(parts.length>2){nn.innerHTML='<ul>'+parts.map(l=>`<li>${l}</li>`).join('')+'</ul>';}
+    else{nn.innerHTML=`<p>${note}</p>`;}
+  }else{
+    nn.innerHTML=`<p style="color:var(--muted)">${s==='y'?'Функция работает без ограничений на данной платформе.':'Нет дополнительных данных в документации.'}</p>`;
+  }
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('backdrop').classList.add('on');
+}
+
+function closePanel(){
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('on');
+}
+
+// ═══════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════
+function onSearchInput(){
+  state.search=document.getElementById('si').value;
+  if(state.view!=='matrix'){switchView('matrix');}
+  if(window._matrixRendered)renderMatrixBody();
+}
+
+// ═══════════════════════════════════════
+//  KEYBOARD
+// ═══════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.getElementById('si').focus();}
+  if(e.key==='Escape'){closePanel();}
+});
+
+// Detect platform for kbd hint
+if(!/Mac/i.test(navigator.platform)){document.getElementById('kbdhint').textContent='Ctrl K';}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+renderDashboard();
+renderPlatforms();
+</script>
+</body>
+</html>
