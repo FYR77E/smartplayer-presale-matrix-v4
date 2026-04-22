@@ -556,6 +556,121 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   .theme-toggle{min-width:auto;}
   #panel{width:100vw;}
 }
+
+/* ═══════════════════════════════════════
+   COMPARE VIEW
+═══════════════════════════════════════ */
+.compare-wrap{padding:24px;max-width:1600px;margin:0 auto;}
+.compare-hero{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:20px 24px;margin-bottom:20px;
+}
+.compare-hero h2{font-size:16px;font-weight:600;margin-bottom:6px;}
+.compare-hero p{color:var(--muted);font-size:13px;}
+.compare-plat-sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.cplat-btn{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  border-radius:var(--r2);border:2px solid var(--border2);
+  background:var(--bg3);color:var(--muted);font-size:12px;font-weight:600;
+  transition:all .15s;cursor:pointer;
+}
+.cplat-btn:hover{border-color:var(--border3);color:var(--text);}
+.cplat-btn.on{color:var(--text);background:var(--bg2);}
+.cplat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.compare-controls{
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;
+}
+.compare-controls .quick-btn.diff-on{border-color:var(--info);color:var(--info);background:rgba(77,166,255,.1);}
+.cmp-table-wrap{overflow:auto;}
+.cmp-table{border-collapse:separate;border-spacing:0;width:100%;}
+.cmp-table thead th{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg2);border-bottom:2px solid var(--border2);
+  padding:10px 12px;font-size:12px;font-weight:600;
+  text-align:center;white-space:nowrap;min-width:160px;
+}
+.cmp-table thead th.cmp-fc{
+  text-align:left;min-width:240px;position:sticky;left:0;z-index:25;
+  font-size:10px;font-weight:700;letter-spacing:.4px;color:var(--faint);
+}
+.cmp-th-inner{display:flex;flex-direction:column;align-items:center;gap:2px;border-top:3px solid var(--pcolor,var(--accent));padding-top:4px;margin-top:-10px;}
+.cmp-th-inner .pn{font-size:13px;font-weight:700;color:var(--text);}
+.cmp-th-inner .ps{font-size:10px;color:var(--muted);}
+.cmp-table tbody tr{border-bottom:1px solid var(--border);transition:background .08s;}
+.cmp-table tbody tr:hover td{background:var(--bg-hover)!important;}
+.cmp-cat-row td{
+  background:var(--bg);border-top:1px solid var(--border);
+  padding:7px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;
+  position:sticky;left:0;
+}
+.cmp-fn{
+  position:sticky;left:0;background:var(--bg2);z-index:4;
+  padding:8px 12px;font-size:12px;color:var(--text2);
+  border-right:1px solid var(--border);min-width:240px;
+  line-height:1.4;transition:background .08s;
+}
+.cmp-table tbody tr:hover .cmp-fn{background:var(--bg3)!important;}
+.cmp-sc{text-align:center;padding:6px 4px;}
+.cmp-diff-row td{background:rgba(240,160,48,.04)!important;}
+.cmp-diff-row .cmp-fn{background:rgba(240,160,48,.06)!important;}
+.cmp-empty{padding:48px;text-align:center;color:var(--muted);font-size:14px;}
+
+/* ═══════════════════════════════════════
+   LICENSING SECTION
+═══════════════════════════════════════ */
+.lic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:32px;}
+.lic-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:16px;border-top:3px solid var(--lcolor,var(--accent));
+}
+.lic-card-name{font-size:13px;font-weight:700;margin-bottom:6px;}
+.lic-card-desc{font-size:11px;color:var(--muted);line-height:1.6;}
+.lic-card-badge{
+  display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;
+  border-radius:3px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;
+}
+
+/* ═══════════════════════════════════════
+   WIKI LINK IN PANEL
+═══════════════════════════════════════ */
+.panel-wiki{
+  margin-top:14px;padding:10px 12px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;color:var(--muted);
+}
+.panel-wiki a{color:var(--info);text-decoration:none;font-weight:600;}
+.panel-wiki a:hover{text-decoration:underline;}
+
+/* ═══════════════════════════════════════
+   INTEGRATIONS SECTION
+═══════════════════════════════════════ */
+.integ-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:32px;}
+.integ-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;border-left:3px solid var(--icolor,var(--accent));
+}
+.integ-card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.integ-icon{font-size:20px;line-height:1;}
+.integ-title{font-size:13px;font-weight:700;}
+.integ-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.integ-list li{
+  font-size:11px;color:var(--text2);display:flex;align-items:flex-start;gap:6px;line-height:1.5;
+}
+.integ-list li::before{content:"•";color:var(--icolor,var(--accent));flex-shrink:0;margin-top:1px;}
+.integ-list li span{color:var(--muted);}
+
+/* ═══════════════════════════════════════
+   PRINT
+═══════════════════════════════════════ */
+@media print{
+  .header,.matrix-controls,.cat-filter,#panel,#backdrop,.tabs,.iconbtn,.search{display:none!important;}
+  .view{display:block!important;}
+  #view-matrix{page-break-before:always;}
+  .twrap{max-height:none;overflow:visible;}
+  table{width:100%!important;}
+}
 </style>
 </head>
 <body>
@@ -566,7 +681,7 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
     <div class="brand-icon">SP</div>
     <div class="brand-text">
       <div class="brand-title">SmartPlayer Compatibility Matrix</div>
-      <div class="brand-sub">Presale-инструмент · v4.0 · 8 платформ · Апрель 2026</div>
+      <div class="brand-sub">Presale-инструмент · v4.1 · 8 платформ · Апрель 2026</div>
     </div>
   </div>
 
@@ -579,6 +694,9 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
     </button>
     <button class="tab" data-view="platforms" onclick="switchView('platforms')">
       <span class="tab-icon">▤</span>Платформы
+    </button>
+    <button class="tab" data-view="compare" onclick="switchView('compare')">
+      <span class="tab-icon">⊞</span>Сравнение
     </button>
   </nav>
 
@@ -632,6 +750,115 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
       <div class="section-sub">То, что важно помнить при разговоре с клиентом</div>
     </div>
     <div class="flags" id="dash-flags"></div>
+
+    <div class="section-head">
+      <div><div class="section-title">Типы лицензий</div></div>
+      <div class="section-sub">Источник: <a href="https://wiki.smartplayer.org/index.php?title=%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" target="_blank" style="color:var(--info);text-decoration:none;">wiki → Лицензирование</a></div>
+    </div>
+    <div class="lic-grid">
+      <div class="lic-card" style="--lcolor:#7878a8">
+        <div class="lic-card-badge" style="background:var(--u-bg);color:var(--u)">НЕАКТИВНАЯ</div>
+        <div class="lic-card-name">Серая лицензия</div>
+        <div class="lic-card-desc">Отработала срок действия. Устройство перестаёт воспроизводить контент. Требует продления или замены.</div>
+      </div>
+      <div class="lic-card" style="--lcolor:#4da6ff">
+        <div class="lic-card-badge" style="background:var(--proj-bg);color:var(--proj-text)">БЕССРОЧНАЯ</div>
+        <div class="lic-card-name">Синяя лицензия</div>
+        <div class="lic-card-desc">Выкупается клиентом навсегда. Без даты истечения. Разовая инвестиция — идеально для долгосрочных инсталляций.</div>
+      </div>
+      <div class="lic-card" style="--lcolor:#3dd68c">
+        <div class="lic-card-badge" style="background:var(--y-bg);color:var(--y)">ПОДПИСКА</div>
+        <div class="lic-card-name">Зелёная лицензия</div>
+        <div class="lic-card-desc">Фиксированный срок действия с датой окончания. Продлевается. Оптимально для рекламных сетей.</div>
+      </div>
+      <div class="lic-card" style="--lcolor:#f0a030">
+        <div class="lic-card-badge" style="background:var(--p-bg);color:var(--p)">ПРОБНАЯ</div>
+        <div class="lic-card-name">Trial лицензия</div>
+        <div class="lic-card-desc">Короткий срок действия для тестирования. Отличается от платной описанием и сроком. Для ознакомления клиента.</div>
+      </div>
+    </div>
+    <div class="flag warn" style="margin-bottom:32px;">
+      <div class="flag-title">⚠ Важно: каждое устройство = отдельная лицензия</div>
+      <div class="flag-desc">Манипуляции с лицензиями ведут к блокировке всего аккаунта компании. Цены — только по запросу у менеджера SmartPlayer.</div>
+    </div>
+
+    <div class="section-head">
+      <div><div class="section-title">Экосистема интеграций</div></div>
+      <div class="section-sub">Источник: <a href="https://wiki.smartplayer.org/index.php?title=Integrations" target="_blank" style="color:var(--info);text-decoration:none;">wiki → Integrations</a></div>
+    </div>
+    <div class="integ-grid">
+
+      <div class="integ-card" style="--icolor:#a78bfa">
+        <div class="integ-card-head"><span class="integ-icon">🖥</span><div class="integ-title">Поддерживаемые дисплеи</div></div>
+        <ul class="integ-list">
+          <li><strong>Samsung</strong> <span>SSSP2–10 · Tizen 2.4–7 · серии QBC/QMC/QHC/QMN/QHH/PMF/DBE и др.</span></li>
+          <li><strong>LG</strong> <span>WebOS 2.0–4.1 · серии SM/UH/UM/EF/EG/EJ/EV · 43–98" профессиональные</span></li>
+          <li><strong>BenQ</strong> <span>Android 1.0.2.5+ · серии BH24/28/35/38, ST4301K, ST5501K</span></li>
+          <li><strong>Philips</strong> <span>Android 2.03+ · BDL3550Q</span></li>
+          <li><strong>Novastar Taurus</strong> <span>TB30 · установка через Viplex Express · макс. 960×750px, 4 ГБ контента</span></li>
+          <li><strong>Colorlight A35</strong> <span>Установка через специальный гайд</span></li>
+          <li><strong>Lumien / Hisense / HikVision</strong> <span>профессиональные панели</span></li>
+        </ul>
+      </div>
+
+      <div class="integ-card" style="--icolor:#3dd68c">
+        <div class="integ-card-head"><span class="integ-icon">🖧</span><div class="integ-title">Серверная инфраструктура</div></div>
+        <ul class="integ-list">
+          <li><strong>Облако</strong> <span>Россия, Казахстан, Индия, США · cms.smartplayer.org</span></li>
+          <li><strong>Локальный сервер</strong> <span>Ubuntu Server 24.04 LTS · Astra Linux 1.7 / 1.8</span></li>
+          <li><strong>Виртуализация</strong> <span>VMware (VMDK-образ) · Hyper-V (доп. оплата)</span></li>
+          <li><strong>Кластер</strong> <span>Master + Worker-ноды · до 5000 устройств · S3-хранилище</span></li>
+          <li><strong>Мощности</strong> <span>200 экранов → 4 ядра / 8 ГБ · 5000 экранов → 12 ядер / 52 ГБ</span></li>
+          <li><strong>Порты</strong> <span>80 (HTTP) / 443 (HTTPS) · WebSocket WS/WSS · GlobalSign для HTTPS</span></li>
+        </ul>
+      </div>
+
+      <div class="integ-card" style="--icolor:#80b040">
+        <div class="integ-card-head"><span class="integ-icon">👁</span><div class="integ-title">Видеоаналитика</div></div>
+        <ul class="integ-list">
+          <li><strong>NtechLab</strong> <span>ntechlab.ru · платно · только Ubuntu · распознавание лиц, пол, возраст</span></li>
+          <li><strong>Intel OpenVino</strong> <span>Бесплатно · Win10 + Ubuntu · оптимизирован под Intel NUC</span></li>
+          <li><strong>OpenCV</strong> <span>Бесплатно · Win10 + Ubuntu · наименее точный</span></li>
+          <li><strong>USB-камеры</strong> <span>Logitech HD Pro C910, C920, C270, C310</span></li>
+          <li><strong>Функции</strong> <span>Смена контента по полу/возрасту · тепловые карты посещаемости</span></li>
+        </ul>
+      </div>
+
+      <div class="integ-card" style="--icolor:#4da6ff">
+        <div class="integ-card-head"><span class="integ-icon">🔌</span><div class="integ-title">Протоколы и API</div></div>
+        <ul class="integ-list">
+          <li><strong>Видеопотоки</strong> <span>RTSP · HLS · UDP · RTP · MPEG-TS · IPTV</span></li>
+          <li><strong>Данные</strong> <span>REST API · WebSocket · SocketIO · FTP/FTPS · Google Drive · GSheets</span></li>
+          <li><strong>Форматы данных</strong> <span>JSON · XML · RSS · HTML5</span></li>
+          <li><strong>Сеть устройств</strong> <span>WebSocket WS/WSS · Multicast UDP 239.255.43.21 (синхронизация)</span></li>
+          <li><strong>Браузеры</strong> <span>Chrome 66+ · Firefox 59+ · Safari 11.1+ · Edge · Opera 52+</span></li>
+        </ul>
+      </div>
+
+      <div class="integ-card" style="--icolor:#f0a030">
+        <div class="integ-card-head"><span class="integ-icon">⚙️</span><div class="integ-title">Аппаратные интеграции</div></div>
+        <ul class="integ-list">
+          <li><strong>Matrox</strong> <span>Только Windows · специальная сборка SmartPlayer · запрашивать у менеджера</span></li>
+          <li><strong>RFID Touch&amp;Watch</strong> <span>Только Windows · считыватель RFID-меток + триггеры</span></li>
+          <li><strong>Последовательные порты</strong> <span>COM · RS-232 · RS-485 · RS-422 (все платформы кроме BrightSign)</span></li>
+          <li><strong>GPIO</strong> <span>Триггеры по входу/выходу</span></li>
+          <li><strong>Wake-on-LAN</strong> <span>Удалённое включение выключенных устройств</span></li>
+          <li><strong>HDMI CEC</strong> <span>НЕ поддерживается — только RS-232 для управления ТВ</span></li>
+        </ul>
+      </div>
+
+      <div class="integ-card" style="--icolor:#e06040">
+        <div class="integ-card-head"><span class="integ-icon">🔔</span><div class="integ-title">Уведомления и мониторинг</div></div>
+        <ul class="integ-list">
+          <li><strong>Email</strong> <span>Устройство офлайн · ошибки · восстановление · настраиваемые часы доставки</span></li>
+          <li><strong>Telegram</strong> <span>Детектор чёрного экрана · по умолчанию отключён · активирует администратор</span></li>
+          <li><strong>Детектор чёрного экрана</strong> <span>Скриншот → анализ → подтверждение через 10 сек → уведомление</span></li>
+          <li><strong>Отчёты</strong> <span>Экспорт в Excel · Proof of Play · онлайн/офлайн · рекламные кампании · опросы</span></li>
+          <li><strong>АЗС (Gas Board)</strong> <span>Интеграция с контроллером клиента · управление ценами на топливо</span></li>
+        </ul>
+      </div>
+
+    </div>
   </div>
 </main>
 
@@ -671,6 +898,25 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   </div>
 </main>
 
+<!-- ═══════════════ VIEW 4: СРАВНЕНИЕ ═══════════════ -->
+<main id="view-compare" class="view">
+  <div class="compare-wrap">
+    <div class="compare-hero">
+      <h2>Сравнение платформ</h2>
+      <p>Выберите 2–6 платформ — увидите все функции рядом. Строки с различиями подсвечены.</p>
+      <div class="compare-plat-sel" id="cmp-plat-sel"></div>
+    </div>
+    <div class="compare-controls">
+      <button class="quick-btn" id="cmp-diff-btn" onclick="toggleCmpDiff()">◈ Только различия</button>
+      <button class="quick-btn" onclick="cmpSelectAll()">Все платформы</button>
+      <button class="quick-btn" onclick="cmpReset()">Сбросить</button>
+    </div>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table"><thead><tr id="cmp-hr"><th class="cmp-fc">ФУНКЦИЯ</th></tr></thead><tbody id="cmp-tb"></tbody></table>
+    </div>
+  </div>
+</main>
+
 <!-- SIDE PANEL -->
 <div id="backdrop" onclick="closePanel()"></div>
 <aside id="panel" aria-hidden="true">
@@ -687,6 +933,10 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
     <div class="panel-help" id="panel-help" style="display:none;">
       <div class="panel-help-label">Совет пресейлу</div>
       <div id="panel-help-text"></div>
+    </div>
+    <div class="panel-wiki">
+      <span>Источник данных</span>
+      <a href="https://wiki.smartplayer.org/index.php?title=SmartPlayer" target="_blank" rel="noopener">wiki.smartplayer.org →</a>
     </div>
   </div>
 </aside>
@@ -776,7 +1026,7 @@ const D=[
 ['content','Изображения (JPG, PNG, WebP)',
 {a:'y',w:'y',l:'y',t:'y',o:'y',wb:'y',r:'y',bs:'y'}],
 ['content','Аудио / фоновая музыка',
-{a:'y',w:'y',l:'y',t:'y',o:'y',wb:'p|В режиме синхронизации аудио НЕ синхронизируется',r:'y',bs:'p|Громкость задаётся на контент, не на устройство'}],
+{a:'p|Независимая аудио-дорожка в трансляции НЕ поддерживается. Аудио реализуется только на уровне зоны. На проф.панелях (SSSP3/4/5/6) видео не должно содержать аудиодорожку — конфликт декодера',w:'y',l:'y',t:'p|Видео на SSSP3/4/5/6 не должно содержать аудиодорожку — конфликт декодера',o:'y',wb:'p|WebOS 2/3/4: видео без аудиодорожки. В синхронизации аудио НЕ синхронизируется',r:'y',bs:'p|Громкость задаётся на контент, не на устройство'}],
 ['content','PDF как контент',
 {a:'y',w:'y',l:'y',t:'p|SSSP4 (Tizen 2.4) — НЕТ! SSSP5+ (Tizen 3.0+) — работает',o:'u',wb:'y',r:'y',bs:'y'}],
 ['content','Потоковое видео RTSP',
@@ -784,7 +1034,7 @@ const D=[
 ['content','HLS / UDP / RTP',
 {a:'y|ExoPlayer. MPEG-TS + H.264 рекомендуется',w:'y',l:'y',t:'y|Только HLS/UDP. Без RTSP',o:'u',wb:'y',r:'y',bs:'y'}],
 ['content','IPTV (ТВ-каналы)',
-{a:'y',w:'y',l:'y',t:'p|Только HLS/UDP',o:'u',wb:'y',r:'y',bs:'n|IPTV НЕ поддерживается на BrightSign OS'}],
+{a:'y',w:'y',l:'y',t:'p|Только HLS/UDP',o:'u',wb:'y',r:'y',bs:'y|Реализовано с v1.10.9 (XT243, XT2145)'}],
 ['content','Одновременно несколько видеозон',
 {a:'p|Зависит от декодера модели — нет общей цифры',w:'y|4× Full HD / 2× 4K / 1× 8K (производительная конфигурация)',l:'p|До 2× Full HD при рекомендуемом железе',t:'p|Видео всегда рендерится на нижнем слое — 2-я видеозона перекроется',o:'p|Ограниченное количество зон',wb:'p|WebOS 6.0: не >1 видео с чересстрочной развёрткой',r:'p|Pi3: 1× 1080p. Pi4: 1× 4K или несколько 1080p',bs:'p|XT/4K/XD: 2 видео. HD/LS: только 1 видео в момент'}],
 ['content','Статистика Proof of Play',
@@ -811,6 +1061,8 @@ const D=[
 ['wstd','Виджет: захват камеры (USB/IP)',{a:'y',w:'y',l:'y',t:'p|Ограниченно — уточнять по модели',o:'n',wb:'p',r:'y',bs:'u'}],
 ['wstd','Виджет: видеозвонок',{a:'y',w:'y',l:'y',t:'p',o:'n',wb:'p',r:'y',bs:'u'}],
 ['wstd','Виджет: Folder Play (локальный / сеть / GDrive / FTPS)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: Оценка качества 2.0 (Quality Rating 2.0)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
+['wstd','Виджет: Двойные часы (Dual-Display Clock)',{a:'y',w:'y',l:'y',t:'y',o:'u',wb:'y',r:'y',bs:'y'}],
 
 // WPAY
 ['wpay','Виджет: Табло авиарейсов',{a:'y',w:'y',l:'y',t:'p',o:'u',wb:'p',r:'y',bs:'u'}],
@@ -944,6 +1196,18 @@ const SCENARIOS=[
 {emoji:'👥', title:'Распознавание лиц / аналитика',
  answer:'Видеоаналитика — ТОЛЬКО Windows и Linux. NtechLab платный, OpenVino и OpenCV бесплатные. Мобильные платформы не поддерживают.',
  best:['w','l'], ok:[], no:['a','t','o','wb','r','bs']},
+{emoji:'🏛', title:'Музей / культурный объект',
+ answer:'Интерактивные инсталляции, touch-столы, навигация по залам. Android и Windows — лучший выбор. Samsung Tizen — без touch на Orsay. BrightSign — нет синхронизации.',
+ best:['a','w','l'], ok:['t','wb','r'], no:['o','bs']},
+{emoji:'🍽', title:'Меню ресторана / кафе',
+ answer:'Динамическое меню с ценами, видео-контент, IPTV фон. Android-приставки — оптимально по цене. Samsung Tizen/LG WebOS на встроенных панелях. Orsay — без PDF-меню.',
+ best:['a','t','wb'], ok:['w','l','r'], no:['o']},
+{emoji:'🏢', title:'Корпоративные коммуникации',
+ answer:'KPI-дашборды, объявления, интеграция с данными. Windows и Linux — максимум виджетов и интеграций. Android — бюджетно. BrightSign — нет Proof-of-Play.',
+ best:['w','l'], ok:['a','t','wb','r'], no:['o','bs']},
+{emoji:'⛽', title:'АЗС — топливные ценники',
+ answer:'Модуль Gas Board для актуальных цен топлива. Android и Windows поддерживают полностью. Samsung Tizen — без RTSP для IP-камер. BrightSign — ограниченно.',
+ best:['a','w'], ok:['t','l','wb'], no:['o','bs']},
 ];
 
 // ═══════════════════════════════════════
@@ -962,6 +1226,10 @@ const FLAGS=[
 {plat:'Android (обычный режим)', title:'Без Device Owner — ограниченное управление', desc:'Перезагрузка, обновление SmartPlayer, таймеры — требуют Device Owner / Signature / Root. В обычном режиме — только физическое обслуживание.', severity:'p'},
 {plat:'BrightSign OS', title:'Proof-of-Play отключён', desc:'Статистика показов не ведётся платформой. Для рекламной сети — не подходит.', severity:'n'},
 {plat:'Raspberry Pi', title:'H.265 не поддерживается', desc:'Только H.264. Pi аппаратно не декодирует HEVC — все ролики H.265 придётся перекодировать.', severity:'n'},
+{plat:'BrightSign OS', title:'Proxy-соединение не поддерживается', desc:'Устройства требуют прямого выхода в интернет. Корпоративные сети с proxy — потребуется исключение на уровне сети.', severity:'n'},
+{plat:'LG WebOS (синхронизация)', title:'Аудио НЕ синхронизируется', desc:'В режиме видеостены/синхронизации аудио-дорожка не участвует в синхронизации. Звук только с одного мастер-устройства.', severity:'p'},
+{plat:'Android (любой режим)', title:'Аудио в объявлениях — только Android', desc:'Объявления с аудиосопровождением поддерживаются ТОЛЬКО на Android. На Windows, Linux, Tizen, WebOS, Raspberry, BrightSign — аудио в объявлениях недоступно.', severity:'p'},
+{plat:'Лицензирование', title:'4 типа лицензий: Trial / Подписка / Бессрочная / Неактивная', desc:'Каждое устройство требует отдельную лицензию. Манипуляции с лицензиями ведут к блокировке аккаунта. Цены — по запросу у менеджера.', severity:'p'},
 ];
 
 // ═══════════════════════════════════════
@@ -1042,9 +1310,101 @@ function switchView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));
   if(v==='matrix'&&!window._matrixRendered){renderMatrix();window._matrixRendered=true;}
   if(v==='platforms')backToList();
+  if(v==='compare')renderCompare();
   window.scrollTo(0,0);
   closePanel();
 }
+
+// ═══════════════════════════════════════
+//  COMPARE
+// ═══════════════════════════════════════
+let cmpSel=new Set(['a','w']);
+let cmpDiffOnly=false;
+
+function renderCompareSelector(){
+  const wrap=document.getElementById('cmp-plat-sel');
+  if(!wrap||wrap.dataset.built)return;
+  wrap.dataset.built='1';
+  PLATS.forEach(p=>{
+    const btn=document.createElement('button');
+    btn.className='cplat-btn'+(cmpSel.has(p.id)?' on':'');
+    btn.dataset.pid=p.id;
+    btn.style.setProperty('--pcolor',p.col);
+    btn.style.borderColor=cmpSel.has(p.id)?p.col:'';
+    btn.innerHTML=`<span class="cplat-dot" style="background:${p.col}"></span>${p.name}<span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:2px;">${p.sub}</span>`;
+    btn.onclick=()=>{
+      if(cmpSel.has(p.id)){if(cmpSel.size<=2)return;cmpSel.delete(p.id);btn.classList.remove('on');btn.style.borderColor='';}
+      else{cmpSel.add(p.id);btn.classList.add('on');btn.style.borderColor=p.col;}
+      renderCompareTable();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderCompare(){
+  renderCompareSelector();
+  renderCompareTable();
+}
+
+function renderCompareTable(){
+  const selPlats=PLATS.filter(p=>cmpSel.has(p.id));
+  // header
+  const hr=document.getElementById('cmp-hr');
+  hr.innerHTML='<th class="cmp-fc">ФУНКЦИЯ</th>';
+  selPlats.forEach(p=>{
+    const th=document.createElement('th');
+    th.style.setProperty('--pcolor',p.col);
+    th.innerHTML=`<div class="cmp-th-inner"><span class="pn">${p.name}</span><span class="ps">${p.sub}</span></div>`;
+    hr.appendChild(th);
+  });
+  // body
+  const tb=document.getElementById('cmp-tb');tb.innerHTML='';
+  let curCat=null;
+  D.forEach(feat=>{
+    const[cat,name,stats]=feat;
+    const vals=selPlats.map(p=>ps(stats[p.id]));
+    const statuses=vals.map(v=>v.s);
+    const isDiff=new Set(statuses).size>1||(statuses.some(s=>s==='n'||s==='p'||s==='w'));
+    if(cmpDiffOnly&&!isDiff)return;
+    if(cat!==curCat){
+      curCat=cat;
+      const cr=document.createElement('tr');
+      const td=document.createElement('td');td.colSpan=selPlats.length+1;
+      td.className='cmp-cat-row';
+      td.style.color=CC[cat];td.textContent=CATS[cat];
+      cr.appendChild(td);tb.appendChild(cr);
+    }
+    const tr=document.createElement('tr');
+    if(isDiff)tr.classList.add('cmp-diff-row');
+    const fn=document.createElement('td');fn.className='cmp-fn';
+    fn.textContent=name;
+    if(isDiff)fn.style.borderLeft='3px solid var(--p)';
+    tr.appendChild(fn);
+    selPlats.forEach((p,i)=>{
+      const td=document.createElement('td');td.className='cmp-sc';
+      const v=vals[i];
+      const chip=document.createElement('span');
+      chip.className=`chip ${v.s}${v.note?' has-note':''}`;
+      chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${SL[v.s]}</span>`;
+      chip.onclick=(e)=>{e.stopPropagation();showPanel(p.name,name,v.note,v.s);};
+      td.appendChild(chip);tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  if(!tb.children.length){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="cmp-empty" colspan="${selPlats.length+1}">Нет различий при выбранных платформах — все функции совпадают ✓</td>`;
+    tb.appendChild(tr);
+  }
+}
+
+function toggleCmpDiff(){
+  cmpDiffOnly=!cmpDiffOnly;
+  document.getElementById('cmp-diff-btn').classList.toggle('diff-on',cmpDiffOnly);
+  renderCompareTable();
+}
+function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));document.getElementById('cmp-plat-sel').dataset.built='';renderCompareSelector();renderCompareTable();}
+function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;document.getElementById('cmp-diff-btn').classList.remove('diff-on');document.getElementById('cmp-plat-sel').dataset.built='';renderCompareSelector();renderCompareTable();}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -1357,6 +1717,13 @@ function onSearchInput(){
 document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.getElementById('si').focus();}
   if(e.key==='Escape'){closePanel();}
+  // 1–4 для переключения вкладок (только если фокус не в input)
+  if(!e.metaKey&&!e.ctrlKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'){
+    if(e.key==='1')switchView('dash');
+    if(e.key==='2')switchView('matrix');
+    if(e.key==='3')switchView('platforms');
+    if(e.key==='4')switchView('compare');
+  }
 });
 
 // Detect platform for kbd hint
