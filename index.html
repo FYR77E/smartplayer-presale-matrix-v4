@@ -465,7 +465,16 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   background:var(--pcolor,var(--accent));
 }
 .plat-detail-title{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;}
-.plat-detail-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.plat-detail-sub{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.plat-detail-wiki{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;margin-bottom:18px;
+  border:1px solid var(--pcolor,var(--border2));border-radius:999px;
+  background:rgba(255,255,255,.03);
+  color:var(--pcolor,var(--text));font-size:12px;font-weight:600;
+  text-decoration:none;transition:all .15s;
+}
+.plat-detail-wiki:hover{background:rgba(255,255,255,.08);transform:translateY(-1px);}
 .plat-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
 .plat-detail-met{
   background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;
@@ -568,6 +577,19 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 .compare-hero h2{font-size:16px;font-weight:600;margin-bottom:6px;}
 .compare-hero p{color:var(--muted);font-size:13px;}
 .compare-plat-sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+@media (max-width:640px){
+  .compare-plat-sel{
+    flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+    padding-bottom:6px;margin-right:-24px;padding-right:24px;
+    scrollbar-width:thin;
+  }
+  .compare-plat-sel::-webkit-scrollbar{height:4px;}
+  .compare-plat-sel::-webkit-scrollbar-thumb{background:var(--border3);border-radius:2px;}
+  .compare-plat-sel .cplat-btn{flex-shrink:0;scroll-snap-align:start;padding:7px 10px;font-size:11px;}
+  .compare-plat-sel .cplat-btn span:last-child{display:none;}
+  .compare-hero{padding:16px 18px;}
+}
 .cplat-btn{
   display:flex;align-items:center;gap:8px;padding:8px 14px;
   border-radius:var(--r2);border:2px solid var(--border2);
@@ -576,12 +598,56 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 }
 .cplat-btn:hover{border-color:var(--border3);color:var(--text);}
 .cplat-btn.on{color:var(--text);background:var(--bg2);}
+.cplat-btn.shake{animation:cplatShake .38s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes cplatShake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
 .cplat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .compare-controls{
   display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;
 }
 .compare-controls .quick-btn.diff-on{border-color:var(--info);color:var(--info);background:rgba(77,166,255,.1);}
-.cmp-table-wrap{overflow:auto;}
+.cmp-stats{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+.cmp-stats strong{color:var(--text);font-weight:700;}
+.cmp-stats .cmp-stats-diff{color:var(--accent);}
+.cmp-cats{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;
+}
+.cmp-cat-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:999px;cursor:pointer;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--muted);font-size:11px;font-weight:600;
+  transition:all .12s;white-space:nowrap;
+}
+.cmp-cat-chip:hover{color:var(--text);border-color:var(--border3);}
+.cmp-cat-chip.on{color:var(--text);background:var(--bg2);border-color:var(--ccol,var(--accent));}
+.cmp-cat-chip .cmp-cat-dot{width:7px;height:7px;border-radius:50%;background:var(--ccol,var(--accent));}
+.cmp-cat-chip.all{font-weight:700;}
+@media (max-width:640px){
+  .cmp-cats{flex-wrap:nowrap;overflow-x:auto;margin-right:-24px;padding-right:24px;scrollbar-width:thin;}
+  .cmp-cats::-webkit-scrollbar{height:4px;}
+  .cmp-cats::-webkit-scrollbar-thumb{background:var(--border3);border-radius:2px;}
+  .cmp-cat-chip{flex-shrink:0;}
+}
+.cmp-legend{
+  display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;
+  padding:10px 14px;margin-bottom:14px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  font-size:11px;color:var(--muted);
+}
+.cmp-lg-item{display:inline-flex;align-items:center;gap:6px;}
+.cmp-lg-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:4px;font-weight:700;font-size:11px;
+  background:var(--bg3);border:1px solid var(--border2);
+}
+.cmp-lg-y{color:#3dd68c;border-color:rgba(61,214,140,.35);}
+.cmp-lg-p{color:#f0a030;border-color:rgba(240,160,48,.35);}
+.cmp-lg-n{color:#e06040;border-color:rgba(224,96,64,.35);}
+.cmp-lg-w{color:#d040a0;border-color:rgba(208,64,160,.35);}
+.cmp-lg-u{color:var(--faint);}
+@media (max-width:640px){.cmp-legend{font-size:10px;padding:8px 10px;gap:6px 10px;}.cmp-stats{margin-left:0;font-size:11px;width:100%;}}
+.cmp-table-wrap{overflow:auto;max-height:calc(100vh - 80px);border:1px solid var(--border);border-radius:var(--r2);}
+@media (max-width:640px){.cmp-table-wrap{max-height:calc(100vh - 140px);}}
 .cmp-table{border-collapse:separate;border-spacing:0;width:100%;}
 .cmp-table thead th{
   position:sticky;top:0;z-index:20;
@@ -903,13 +969,22 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   <div class="compare-wrap">
     <div class="compare-hero">
       <h2>Сравнение платформ</h2>
-      <p>Выберите 2–6 платформ — увидите все функции рядом. Строки с различиями подсвечены.</p>
+      <p>Выберите от 2 платформ — увидите все функции рядом. Строки с различиями подсвечены.</p>
       <div class="compare-plat-sel" id="cmp-plat-sel"></div>
     </div>
     <div class="compare-controls">
       <button class="quick-btn" id="cmp-diff-btn" onclick="toggleCmpDiff()">◈ Только различия</button>
       <button class="quick-btn" onclick="cmpSelectAll()">Все платформы</button>
       <button class="quick-btn" onclick="cmpReset()">Сбросить</button>
+      <span id="cmp-stats" class="cmp-stats" aria-live="polite"></span>
+    </div>
+    <div class="cmp-cats" id="cmp-cats" aria-label="Фильтр категорий"></div>
+    <div class="cmp-legend" aria-label="Легенда статусов">
+      <span class="cmp-lg-item"><span class="cmp-lg-icon cmp-lg-y">✓</span>Работает</span>
+      <span class="cmp-lg-item"><span class="cmp-lg-icon cmp-lg-p">~</span>Частично</span>
+      <span class="cmp-lg-item"><span class="cmp-lg-icon cmp-lg-n">✗</span>Не&nbsp;поддерживается</span>
+      <span class="cmp-lg-item"><span class="cmp-lg-icon cmp-lg-w">!</span>Баг&nbsp;/&nbsp;временно</span>
+      <span class="cmp-lg-item"><span class="cmp-lg-icon cmp-lg-u">?</span>Нет&nbsp;данных</span>
     </div>
     <div class="cmp-table-wrap">
       <table class="cmp-table"><thead><tr id="cmp-hr"><th class="cmp-fc">ФУНКЦИЯ</th></tr></thead><tbody id="cmp-tb"></tbody></table>
@@ -936,7 +1011,7 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
     </div>
     <div class="panel-wiki">
       <span>Источник данных</span>
-      <a href="https://wiki.smartplayer.org/index.php?title=SmartPlayer" target="_blank" rel="noopener">wiki.smartplayer.org →</a>
+      <a id="panel-wiki-link" href="https://wiki.smartplayer.org/index.php?title=SmartPlayer" target="_blank" rel="noopener">wiki.smartplayer.org →</a>
     </div>
   </div>
 </aside>
@@ -961,13 +1036,13 @@ const PLATS=[
   {id:'o',  name:'Samsung Orsay', sub:'SSSP2–3 · Legacy',       col:'#fb923c', badge:'legacy',
    oneLiner:'Устаревшая платформа. Только горизонталь, старый движок.',
    keys:['Только горизонтальная ориентация','Файл ≤ 1.5 ГБ','Нет touch, нет QR Remote']},
-  {id:'wb', name:'LG WebOS',      sub:'2.0 – 9.0',              col:'#f472b6', badge:'stable',
+  {id:'wb', name:'LG WebOS',      sub:'2.0 – 6.0',              col:'#f472b6', badge:'stable',
    oneLiner:'Проф.панели LG. Бытовые НЕ поддерживаются.',
    keys:['WebOS 2.0 — без мультизонности','Видеостена: 1 зона + 1 страница','Порядок перезагрузки: мастер первый']},
-  {id:'r',  name:'Raspberry Pi',  sub:'Pi3 / Pi4 / Pi5',        col:'#34d399', badge:'stable',
+  {id:'r',  name:'Raspberry Pi',  sub:'Pi3 / Pi4',              col:'#34d399', badge:'stable',
    oneLiner:'Бюджетный вариант. Pi4 рекомендуется.',
    keys:['Только H.264 (нет H.265)','Ручное обновление через USB','Pi3: до 1080p; Pi4: 4K']},
-  {id:'bs', name:'BrightSign OS', sub:'FW 7.x / 8.x',           col:'#38bdf8', badge:'new',
+  {id:'bs', name:'BrightSign OS', sub:'FW 8.x+',                col:'#38bdf8', badge:'new',
    oneLiner:'Профессиональные медиаплееры. Много ограничений.',
    keys:['Синхронизация НЕ работает','Proof-of-play отключён','Только MicroSD, не USB flash']},
 ];
@@ -1320,11 +1395,32 @@ function switchView(v){
 // ═══════════════════════════════════════
 let cmpSel=new Set(['a','w']);
 let cmpDiffOnly=false;
+let cmpCatFilter=new Set();
+
+function renderCmpCats(){
+  const wrap=document.getElementById('cmp-cats');
+  if(!wrap)return;
+  wrap.innerHTML='';
+  const mkChip=(id,label,color,isAll)=>{
+    const b=document.createElement('button');
+    b.className='cmp-cat-chip'+(isAll?' all':'')+((isAll&&!cmpCatFilter.size)||(!isAll&&cmpCatFilter.has(id))?' on':'');
+    if(color)b.style.setProperty('--ccol',color);
+    b.innerHTML=(isAll?'':`<span class="cmp-cat-dot"></span>`)+label;
+    b.onclick=()=>{
+      if(isAll){cmpCatFilter.clear();}
+      else{if(cmpCatFilter.has(id))cmpCatFilter.delete(id);else cmpCatFilter.add(id);}
+      renderCmpCats();renderCompareTable();
+    };
+    wrap.appendChild(b);
+  };
+  mkChip(null,'Все',null,true);
+  Object.keys(CATS).forEach(id=>mkChip(id,CATS[id],CC[id],false));
+}
 
 function renderCompareSelector(){
   const wrap=document.getElementById('cmp-plat-sel');
-  if(!wrap||wrap.dataset.built)return;
-  wrap.dataset.built='1';
+  if(!wrap)return;
+  wrap.innerHTML='';
   PLATS.forEach(p=>{
     const btn=document.createElement('button');
     btn.className='cplat-btn'+(cmpSel.has(p.id)?' on':'');
@@ -1333,8 +1429,12 @@ function renderCompareSelector(){
     btn.style.borderColor=cmpSel.has(p.id)?p.col:'';
     btn.innerHTML=`<span class="cplat-dot" style="background:${p.col}"></span>${p.name}<span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:2px;">${p.sub}</span>`;
     btn.onclick=()=>{
-      if(cmpSel.has(p.id)){if(cmpSel.size<=2)return;cmpSel.delete(p.id);btn.classList.remove('on');btn.style.borderColor='';}
-      else{cmpSel.add(p.id);btn.classList.add('on');btn.style.borderColor=p.col;}
+      if(cmpSel.has(p.id)){
+        if(cmpSel.size<=2){btn.classList.add('shake');setTimeout(()=>btn.classList.remove('shake'),400);return;}
+        cmpSel.delete(p.id);btn.classList.remove('on');btn.style.borderColor='';
+      } else {
+        cmpSel.add(p.id);btn.classList.add('on');btn.style.borderColor=p.col;
+      }
       renderCompareTable();
     };
     wrap.appendChild(btn);
@@ -1343,6 +1443,7 @@ function renderCompareSelector(){
 
 function renderCompare(){
   renderCompareSelector();
+  renderCmpCats();
   renderCompareTable();
 }
 
@@ -1362,9 +1463,10 @@ function renderCompareTable(){
   let curCat=null;
   D.forEach(feat=>{
     const[cat,name,stats]=feat;
+    if(cmpCatFilter.size&&!cmpCatFilter.has(cat))return;
     const vals=selPlats.map(p=>ps(stats[p.id]));
     const statuses=vals.map(v=>v.s);
-    const isDiff=new Set(statuses).size>1||(statuses.some(s=>s==='n'||s==='p'||s==='w'));
+    const isDiff=new Set(statuses).size>1;
     if(cmpDiffOnly&&!isDiff)return;
     if(cat!==curCat){
       curCat=cat;
@@ -1396,6 +1498,18 @@ function renderCompareTable(){
     tr.innerHTML=`<td class="cmp-empty" colspan="${selPlats.length+1}">Нет различий при выбранных платформах — все функции совпадают ✓</td>`;
     tb.appendChild(tr);
   }
+  // stats counter (R5)
+  let total=0,diff=0;
+  D.forEach(f=>{
+    const ss=selPlats.map(p=>ps(f[2][p.id]).s);
+    total++;
+    if(new Set(ss).size>1)diff++;
+  });
+  const stats=document.getElementById('cmp-stats');
+  if(stats){
+    const same=total-diff;
+    stats.innerHTML=`<span>Из <strong>${total}</strong> функций:</span> <span><strong>${same}</strong> совпадают</span> · <span class="cmp-stats-diff"><strong>${diff}</strong> различаются</span>`;
+  }
 }
 
 function toggleCmpDiff(){
@@ -1403,8 +1517,8 @@ function toggleCmpDiff(){
   document.getElementById('cmp-diff-btn').classList.toggle('diff-on',cmpDiffOnly);
   renderCompareTable();
 }
-function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));document.getElementById('cmp-plat-sel').dataset.built='';renderCompareSelector();renderCompareTable();}
-function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;document.getElementById('cmp-diff-btn').classList.remove('diff-on');document.getElementById('cmp-plat-sel').dataset.built='';renderCompareSelector();renderCompareTable();}
+function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));renderCompareSelector();renderCompareTable();}
+function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCompareTable();}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -1620,6 +1734,7 @@ function showPlatformDetail(platId){
     <div class="plat-detail-hero" style="--pcolor:${p.col}">
       <div class="plat-detail-title">${p.name} <span class="pcard-badge ${p.badge}" style="vertical-align:middle;font-size:10px;margin-left:8px;">${badgeLabel}</span></div>
       <div class="plat-detail-sub">${p.sub} · ${p.oneLiner}</div>
+      ${WIKI_URL_BY_PLAT[p.name]?`<a class="plat-detail-wiki" href="${WIKI_URL_BY_PLAT[p.name]}" target="_blank" rel="noopener">📖 ${p.name} на wiki.smartplayer.org →</a>`:''}
       <div class="plat-detail-grid">
         <div class="plat-detail-met"><div class="plat-detail-met-v" style="color:var(--y)">${cnt.y}</div><div class="plat-detail-met-l">Работает</div></div>
         <div class="plat-detail-met"><div class="plat-detail-met-v" style="color:var(--p)">${cnt.p}</div><div class="plat-detail-met-l">Частично</div></div>
@@ -1681,9 +1796,21 @@ function backToList(){
 // ═══════════════════════════════════════
 //  SIDE PANEL
 // ═══════════════════════════════════════
+const WIKI_URL_BY_PLAT={
+  'Android':'https://wiki.smartplayer.org/index.php?title=Android',
+  'Windows':'https://wiki.smartplayer.org/index.php?title=Windows',
+  'Linux':'https://wiki.smartplayer.org/index.php?title=Linux',
+  'Samsung Tizen':'https://wiki.smartplayer.org/index.php?title=SSSP',
+  'Samsung Orsay':'https://wiki.smartplayer.org/index.php?title=SSSP',
+  'LG WebOS':'https://wiki.smartplayer.org/index.php?title=WebOS',
+  'Raspberry Pi':'https://wiki.smartplayer.org/index.php?title=Raspberry_Pi_3-4',
+  'BrightSign OS':'https://wiki.smartplayer.org/index.php?title=BrightSign_OS'
+};
 function showPanel(plat,feat,note,s){
   document.getElementById('pp').textContent=plat;
   document.getElementById('pf').textContent=feat;
+  const wl=document.getElementById('panel-wiki-link');
+  if(wl){const u=WIKI_URL_BY_PLAT[plat]||'https://wiki.smartplayer.org/index.php?title=SmartPlayer';wl.href=u;wl.textContent=(WIKI_URL_BY_PLAT[plat]?plat+' · wiki →':'wiki.smartplayer.org →');}
   const st=document.getElementById('pst');st.className='';st.classList.add(s);st.textContent=SLBL[s]||s;
   const nn=document.getElementById('pn');
   if(note){
