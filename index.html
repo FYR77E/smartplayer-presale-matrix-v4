@@ -192,6 +192,9 @@ input{font-family:inherit;}
 }
 .tab:hover{color:var(--text2);}
 .tab.active{background:var(--bg);color:var(--text);box-shadow:var(--tab-active-shadow);}
+.tab:focus-visible,.quick-btn:focus-visible,.iconbtn:focus-visible,.cplat-btn:focus-visible,.cat-chip:focus-visible,.cmp-cat-chip:focus-visible,.bento-action:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px;}
+*:focus{outline:none;}
+*:focus-visible{outline-offset:2px;}
 .tab-icon{font-size:13px;opacity:.8;}
 
 .header-r{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
@@ -997,6 +1000,7 @@ body{background:
   display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r2);
   background:var(--bg4);border:1px solid var(--border2);
   font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;
+  text-align:left;font-family:inherit;width:100%;
   transition:transform .15s,border-color .15s,color .15s,background .15s;
 }
 .bento-action:hover{border-color:var(--accent);color:var(--text);background:var(--bg5);transform:translateX(3px);}
@@ -1128,10 +1132,10 @@ body{background:
       <div class="bento-tile bento-actions">
         <div class="bento-tile-label"><span class="dot"></span>Быстрые сценарии</div>
         <div class="bento-action-list">
-          <div class="bento-action" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['w','l']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">⚡</span>Windows vs Linux<span class="arrow">→</span></div>
-          <div class="bento-action" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['a','t','o']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">📱</span>Мобильные / ТВ<span class="arrow">→</span></div>
-          <div class="bento-action" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpDiffOnly=true;document.getElementById('cmp-diff-btn').classList.add('diff-on');renderCompareTable();},80)"><span class="ico">◈</span>Только различия<span class="arrow">→</span></div>
-          <div class="bento-action" onclick="switchView('matrix')"><span class="ico">▦</span>Полная матрица<span class="arrow">→</span></div>
+          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['w','l']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">⚡</span>Windows vs Linux<span class="arrow">→</span></button>
+          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['a','t','o']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">📱</span>Мобильные / ТВ<span class="arrow">→</span></button>
+          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpDiffOnly=true;document.getElementById('cmp-diff-btn').classList.add('diff-on');renderCompareTable();},80)"><span class="ico">◈</span>Только различия<span class="arrow">→</span></button>
+          <button class="bento-action" type="button" onclick="switchView('matrix')"><span class="ico">▦</span>Полная матрица<span class="arrow">→</span></button>
         </div>
       </div>
 
@@ -1730,6 +1734,12 @@ function countsByCat(cat,platId){
 //  VIEW SWITCHING
 // ═══════════════════════════════════════
 function switchView(v){
+  // reset matrix-only filters when leaving matrix (prevent state leak)
+  if(state.view==='matrix'&&v!=='matrix'){
+    if(state.search){state.search='';const si=document.getElementById('si');if(si)si.value='';}
+    if(state.issueMode){state.issueMode=false;const ib=document.getElementById('issues-btn');if(ib)ib.classList.remove('on');}
+    if(window._matrixRendered)renderMatrix();
+  }
   state.view=v;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
   document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));
@@ -2014,10 +2024,12 @@ function renderMatrix(){
     th.innerHTML=`<div class="thp"><span class="pn">${p.name}${p.badge==='new'?'<span class="new-badge">NEW</span>':''}</span><span class="ps2">${p.sub}</span></div>`;
     hr.appendChild(th);
   });
-  // category filter
-  const cf=document.getElementById('cat-filter');
+  // category filter (sync visible state with state.activeCats — fix init mismatch)
+  const cf=document.getElementById('cat-filter');cf.innerHTML='';
   CO.forEach(cat=>{
-    const btn=document.createElement('button');btn.className='cat-chip on';btn.dataset.cat=cat;
+    const btn=document.createElement('button');
+    btn.className='cat-chip'+(state.activeCats.has(cat)?' on':'');
+    btn.dataset.cat=cat;
     btn.style.setProperty('--ccol',CC[cat]);
     btn.innerHTML=`<span class="cat-chip-dot"></span>${CATS[cat]}`;
     btn.onclick=()=>{
