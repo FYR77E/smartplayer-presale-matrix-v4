@@ -253,8 +253,17 @@ input{font-family:inherit;}
 .hero-stat-v{font-size:28px;font-weight:700;color:var(--accent);letter-spacing:-.5px;line-height:1;}
 .hero-stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px;}
 
-.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:32px 0 14px;}
-.section-title{font-size:16px;font-weight:600;letter-spacing:-.2px;}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:36px 0 16px;position:relative;padding-bottom:14px;}
+.section-head::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,var(--border3) 0%,transparent 70%);
+}
+.section-head::before{
+  content:"";position:absolute;left:0;bottom:-1px;width:48px;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--info));
+  border-radius:2px;box-shadow:0 0 8px var(--accent-glow);
+}
+.section-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
 .section-sub{color:var(--muted);font-size:12px;}
 
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
@@ -389,16 +398,19 @@ thead th.fc{
 
 /* feature rows */
 tr.fr{border-bottom:1px solid var(--border);transition:background .08s;}
+tr.fr:nth-child(even) td{background:var(--bg2);}
+tr.fr:nth-child(even) td.fn{background:var(--bg3);}
 tr.fr:hover td{background:var(--bg-hover)!important;}
+tr.fr:hover td.fn{background:var(--bg4)!important;}
 tr.fr.gone{display:none;}
 
 td.fn{
   position:sticky;left:0;background:var(--bg2);z-index:4;
-  padding:8px 14px;font-size:12px;min-width:260px;max-width:260px;
+  padding:9px 14px;font-size:12px;min-width:260px;max-width:260px;
   word-break:break-word;border-right:1px solid var(--border);line-height:1.45;
-  transition:background .08s;
+  transition:background .08s;font-weight:500;
 }
-tr.fr:hover td.fn{background:var(--bg3)!important;}
+tr.fr:hover{box-shadow:inset 3px 0 0 var(--accent);}
 
 .tag{
   display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;
@@ -756,6 +768,11 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   font-size:11px;color:var(--muted);
   letter-spacing:.2px;
   backdrop-filter:saturate(1.4) blur(8px);
+}
+.ticker::before{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--accent) 25%,var(--info) 50%,var(--accent) 75%,transparent 100%);
+  opacity:.5;
 }
 .ticker-inner{
   max-width:1600px;margin:0 auto;padding:7px 24px;
@@ -1923,6 +1940,10 @@ function renderBento(){
   countUp(document.getElementById('bh-diff'),diff);
   countUp(document.getElementById('bh-match2'),match);
   countUp(document.getElementById('bh-diff2'),diff);
+  // ticker numbers (sync with live data)
+  countUp(document.getElementById('tk-plats'),PLATS.length,900);
+  countUp(document.getElementById('tk-feats'),total,1300);
+  countUp(document.getElementById('tk-cats'),Object.keys(CATS).length,900);
   setTimeout(()=>{
     document.getElementById('bh-bar-m').style.width=(match/total*100)+'%';
     document.getElementById('bh-bar-d').style.width=(diff/total*100)+'%';
