@@ -819,8 +819,79 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   .dash-details .ddt-meta{margin-left:0;width:100%;font-size:11px;}
 }
 
+/* ═══════════════════════════════════════
+   COMMAND PALETTE — Linear/Raycast style
+═══════════════════════════════════════ */
+.pal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  z-index:300;opacity:0;pointer-events:none;transition:opacity .16s ease;
+}
+.pal-backdrop.on{opacity:1;pointer-events:auto;}
+.pal{
+  position:fixed;left:50%;top:14vh;transform:translate(-50%,-8px);
+  width:min(640px,calc(100vw - 32px));max-height:72vh;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border3);border-radius:14px;
+  box-shadow:0 32px 80px -20px rgba(0,0,0,.7),0 0 0 1px var(--accent-glow) inset;
+  z-index:301;opacity:0;pointer-events:none;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .14s;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.pal.on{opacity:1;transform:translate(-50%,0);pointer-events:auto;}
+.pal-input-wrap{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-bottom:1px solid var(--border);
+}
+.pal-icon{color:var(--muted);flex-shrink:0;}
+.pal-input-wrap input{
+  flex:1;background:none;border:none;outline:none;color:var(--text);
+  font-family:inherit;font-size:15px;padding:0;letter-spacing:-.1px;
+}
+.pal-input-wrap input::placeholder{color:var(--muted);}
+.pal-kbd{
+  font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:4px;
+  background:var(--bg4);border:1px solid var(--border2);color:var(--muted);
+  box-shadow:inset 0 -1px 0 var(--border);
+}
+.pal-results{flex:1;overflow-y:auto;padding:6px 6px 4px;}
+.pal-results::-webkit-scrollbar{width:6px;}
+.pal-results::-webkit-scrollbar-thumb{background:var(--border3);border-radius:3px;}
+.pal-group{padding:8px 12px 4px;font-size:10px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;}
+.pal-item{
+  display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:12px;
+  padding:9px 12px;border-radius:8px;cursor:pointer;
+  transition:background .1s;
+}
+.pal-item:hover,.pal-item.sel{background:var(--bg4);}
+.pal-item.sel{box-shadow:inset 2px 0 0 var(--accent);}
+.pal-icobox{
+  width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  background:var(--bg5);border:1px solid var(--border2);color:var(--text2);font-size:14px;
+}
+.pal-icobox.plat{background:color-mix(in srgb,var(--icc) 22%,var(--bg4));color:var(--icc);border-color:color-mix(in srgb,var(--icc) 35%,transparent);}
+.pal-icobox.cat{background:color-mix(in srgb,var(--icc) 22%,var(--bg4));color:var(--icc);border-color:color-mix(in srgb,var(--icc) 35%,transparent);font-weight:700;font-size:11px;}
+.pal-text{min-width:0;}
+.pal-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pal-title mark{background:rgba(61,214,140,.22);color:var(--accent);padding:0 2px;border-radius:2px;}
+.pal-sub{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pal-action{font-size:10px;color:var(--faint);font-family:var(--mono);}
+.pal-empty{padding:36px 16px;text-align:center;color:var(--muted);font-size:13px;}
+.pal-foot{
+  display:flex;align-items:center;gap:14px;padding:10px 16px;
+  border-top:1px solid var(--border);font-size:11px;color:var(--muted);
+}
+.pal-foot kbd{font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg4);border:1px solid var(--border2);color:var(--text2);margin-right:4px;}
+.pal-spacer{flex:1;}
+.pal-foot-meta{font-variant-numeric:tabular-nums;}
+@media (max-width:640px){
+  .pal{top:8vh;width:calc(100vw - 16px);max-height:84vh;}
+  .pal-input-wrap{padding:12px;}
+  .pal-input-wrap input{font-size:16px;}
+  .pal-foot{flex-wrap:wrap;gap:8px;font-size:10px;}
+}
+
 @media print{
-  .header,.matrix-controls,.cat-filter,#panel,#backdrop,.tabs,.iconbtn,.search{display:none!important;}
+  .header,.matrix-controls,.cat-filter,#panel,#backdrop,.tabs,.iconbtn,.search,.pal,.pal-backdrop{display:none!important;}
   .view{display:block!important;}
   #view-matrix{page-break-before:always;}
   .twrap{max-height:none;overflow:visible;}
@@ -1365,6 +1436,24 @@ body{background:
 
 <!-- SIDE PANEL -->
 <div id="backdrop" onclick="closePanel()"></div>
+
+<!-- COMMAND PALETTE (⌘K) -->
+<div id="palette-bd" class="pal-backdrop" onclick="closePalette()" aria-hidden="true"></div>
+<div id="palette" class="pal" role="dialog" aria-modal="true" aria-label="Командная панель" aria-hidden="true">
+  <div class="pal-input-wrap">
+    <svg class="pal-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="pal-q" type="text" placeholder="Найти функцию, платформу, категорию, сценарий…" autocomplete="off" spellcheck="false" oninput="palSearch()" onkeydown="palKey(event)">
+    <kbd class="pal-kbd">esc</kbd>
+  </div>
+  <div id="pal-results" class="pal-results" role="listbox"></div>
+  <div class="pal-foot">
+    <span><kbd>↑</kbd><kbd>↓</kbd> навигация</span>
+    <span><kbd>↵</kbd> открыть</span>
+    <span><kbd>esc</kbd> закрыть</span>
+    <span class="pal-spacer"></span>
+    <span class="pal-foot-meta" id="pal-count">0 совпадений</span>
+  </div>
+</div>
 <aside id="panel" aria-hidden="true">
   <div class="panel-head">
     <div class="panel-head-t">
@@ -2281,11 +2370,95 @@ function onSearchInput(){
 }
 
 // ═══════════════════════════════════════
+//  COMMAND PALETTE
+// ═══════════════════════════════════════
+let palIdx=[],palResults=[],palSel=0,_palLastFocus=null;
+function buildPalIdx(){
+  palIdx=[];
+  PLATS.forEach(p=>palIdx.push({type:'plat',id:p.id,col:p.col,title:p.name,sub:p.sub+' · '+(p.oneLiner||''),hay:(p.name+' '+p.sub+' '+(p.oneLiner||'')).toLowerCase(),action:'Платформы'}));
+  Object.keys(CATS).forEach(k=>palIdx.push({type:'cat',id:k,col:CC[k]||'#888',title:CATS[k],sub:'Категория · '+(D.filter(f=>f[0]===k).length)+' функций',hay:(CATS[k]+' '+k).toLowerCase(),action:'Матрица'}));
+  D.forEach((f,i)=>{const cat=CATS[f[0]]||f[0];palIdx.push({type:'feat',id:i,col:CC[f[0]]||'#888',title:f[1],sub:cat,hay:(f[1]+' '+cat).toLowerCase(),action:'Матрица'});});
+  if(typeof SCENARIOS!=='undefined')SCENARIOS.forEach((s,i)=>palIdx.push({type:'scen',id:i,col:'#a78bfa',title:s.title||s.q,sub:'Сценарий клиента',hay:((s.title||s.q)+' '+(s.answer||'')).toLowerCase(),action:'Обзор'}));
+}
+function openPalette(){
+  if(!palIdx.length)buildPalIdx();
+  _palLastFocus=document.activeElement;
+  document.getElementById('palette-bd').classList.add('on');
+  const p=document.getElementById('palette');p.classList.add('on');p.setAttribute('aria-hidden','false');
+  const q=document.getElementById('pal-q');q.value='';palSearch();
+  setTimeout(()=>q.focus(),50);
+}
+function closePalette(){
+  document.getElementById('palette-bd').classList.remove('on');
+  const p=document.getElementById('palette');p.classList.remove('on');p.setAttribute('aria-hidden','true');
+  if(_palLastFocus&&typeof _palLastFocus.focus==='function'){try{_palLastFocus.focus();}catch(e){}}
+}
+function palSearch(){
+  const q=document.getElementById('pal-q').value.trim().toLowerCase();
+  if(!q){
+    palResults=palIdx.slice(0,30);
+  }else{
+    const tokens=q.split(/\s+/);
+    palResults=palIdx
+      .map(it=>{let score=0;let ok=true;tokens.forEach(t=>{const i=it.hay.indexOf(t);if(i<0){ok=false;return;}score+=100-Math.min(i,99);if(it.title.toLowerCase().startsWith(t))score+=200;});return ok?{...it,_s:score}:null;})
+      .filter(Boolean).sort((a,b)=>b._s-a._s).slice(0,40);
+  }
+  palSel=0;palRender();
+}
+function palHL(text,q){
+  if(!q)return esc(text);
+  const tokens=q.toLowerCase().split(/\s+/).filter(Boolean);
+  let out=esc(text);
+  tokens.forEach(t=>{const re=new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');out=out.replace(re,'<mark>$1</mark>');});
+  return out;
+}
+function palRender(){
+  const root=document.getElementById('pal-results');
+  const q=document.getElementById('pal-q').value.trim();
+  document.getElementById('pal-count').textContent=palResults.length+' '+(palResults.length===1?'совпадение':palResults.length>=2&&palResults.length<=4?'совпадения':'совпадений');
+  if(!palResults.length){root.innerHTML='<div class="pal-empty">Ничего не найдено по «'+esc(q)+'»</div>';return;}
+  const groups={plat:'Платформы',cat:'Категории',feat:'Функции',scen:'Сценарии'};
+  const order=['plat','cat','scen','feat'];
+  let html='';
+  order.forEach(g=>{
+    const items=palResults.filter(r=>r.type===g);if(!items.length)return;
+    html+='<div class="pal-group">'+groups[g]+' · '+items.length+'</div>';
+    items.forEach(it=>{
+      const i=palResults.indexOf(it);
+      const ico=it.type==='plat'?(it.title[0]):it.type==='cat'?'#':it.type==='feat'?'⊞':'★';
+      html+=`<div class="pal-item${i===palSel?' sel':''}" role="option" data-i="${i}" onclick="palActivate(${i})">
+        <div class="pal-icobox ${it.type}" style="--icc:${it.col}">${ico}</div>
+        <div class="pal-text">
+          <div class="pal-title">${palHL(it.title,q)}</div>
+          <div class="pal-sub">${esc(it.sub)}</div>
+        </div>
+        <div class="pal-action">${it.action} ↵</div>
+      </div>`;
+    });
+  });
+  root.innerHTML=html;
+  const sel=root.querySelector('.pal-item.sel');if(sel)sel.scrollIntoView({block:'nearest'});
+}
+function palActivate(i){
+  const r=palResults[i];if(!r)return;closePalette();
+  if(r.type==='plat'){switchView('platforms');setTimeout(()=>showPlatformDetail(r.id),60);}
+  else if(r.type==='cat'){switchView('matrix');setTimeout(()=>{const el=document.querySelector('tr.crow[data-cat="'+r.id+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},120);}
+  else if(r.type==='feat'){switchView('matrix');setTimeout(()=>{const f=D[r.id];if(!f)return;const rows=document.querySelectorAll('tr.fr');rows.forEach(row=>{const fn=row.querySelector('td.fn');if(fn&&fn.textContent.includes(f[1])){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.transition='background .8s';const orig=row.style.background;row.style.background='var(--accent-dim)';setTimeout(()=>row.style.background=orig,1400);}});},150);}
+  else if(r.type==='scen'){switchView('dash');setTimeout(()=>{const sc=document.getElementById('dash-scenarios');if(sc){const cards=sc.querySelectorAll('.scen');const card=cards[r.id];if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.style.transition='box-shadow .6s';card.style.boxShadow='0 0 0 2px var(--accent)';setTimeout(()=>card.style.boxShadow='',1400);}}},120);}
+}
+function palKey(e){
+  if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palResults.length-1);palRender();}
+  else if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);palRender();}
+  else if(e.key==='Enter'){e.preventDefault();palActivate(palSel);}
+  else if(e.key==='Escape'){e.preventDefault();closePalette();}
+}
+
+// ═══════════════════════════════════════
 //  KEYBOARD
 // ═══════════════════════════════════════
 document.addEventListener('keydown',e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.getElementById('si').focus();}
-  if(e.key==='Escape'){closePanel();}
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openPalette();}
+  if(e.key==='Escape'){closePanel();closePalette();}
   // 1–4 для переключения вкладок (только если фокус не в input)
   if(!e.metaKey&&!e.ctrlKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'){
     if(e.key==='1')switchView('dash');
@@ -2294,6 +2467,10 @@ document.addEventListener('keydown',e=>{
     if(e.key==='4')switchView('compare');
   }
 });
+// Open palette on header search click
+document.getElementById('si').addEventListener('focus',e=>{e.target.blur();openPalette();});
+document.getElementById('si').readOnly=true;
+document.getElementById('si').placeholder='Найти всё (⌘K)…';
 
 // Detect platform for kbd hint
 if(!/Mac/i.test(navigator.platform)){const kh=document.getElementById('kbdhint');if(kh)kh.textContent='Ctrl K';}
