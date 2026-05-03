@@ -435,6 +435,27 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 .chip.w{background:var(--w-bg);color:var(--w);border-color:var(--w-br);}
 .chip-icon{font-size:10px;line-height:1;}
 .chip.has-note::after{content:"·";margin-left:2px;font-weight:bold;}
+/* native-tooltip on hover (custom, not browser title) */
+.chip[data-tip]{position:relative;}
+.chip[data-tip]::before{
+  content:attr(data-tip);
+  position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(2px);
+  width:max-content;max-width:280px;
+  padding:8px 11px;border-radius:7px;
+  background:var(--bg5);color:var(--text);
+  border:1px solid var(--border3);
+  font-size:11px;font-weight:500;line-height:1.45;text-align:left;letter-spacing:.1px;
+  white-space:normal;
+  box-shadow:0 14px 40px -16px rgba(0,0,0,.6),0 0 0 1px var(--accent-glow) inset;
+  opacity:0;pointer-events:none;
+  transition:opacity .14s ease,transform .14s ease;
+  z-index:60;
+}
+.chip[data-tip]:hover::before,.chip[data-tip]:focus-visible::before{
+  opacity:1;transform:translateX(-50%) translateY(0);
+}
+@media (max-width:640px){.chip[data-tip]::before{max-width:200px;}}
+@media (hover:none){.chip[data-tip]::before{display:none;}}
 
 /* ═══════════════════════════════════════
    VIEW 3: ПЛАТФОРМЫ DEEP DIVE
@@ -507,7 +528,51 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 .plat-detail-met-v{font-size:20px;font-weight:700;letter-spacing:-.2px;line-height:1;margin-bottom:6px;}
 .plat-detail-met-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
 
-.plat-detail-cats{display:grid;gap:10px;}
+/* sticky layout: nav | content */
+.plat-detail-layout{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start;}
+.plat-detail-nav{
+  position:sticky;top:64px;align-self:start;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:12px 10px;max-height:calc(100vh - 100px);overflow-y:auto;
+}
+.plat-detail-nav::-webkit-scrollbar{width:4px;}
+.plat-detail-nav::-webkit-scrollbar-thumb{background:var(--border3);border-radius:2px;}
+.plat-detail-nav-title{
+  font-size:9px;font-weight:700;color:var(--faint);letter-spacing:.6px;
+  text-transform:uppercase;padding:4px 10px 8px;
+}
+.plat-detail-nav-list{display:flex;flex-direction:column;gap:1px;}
+.plat-detail-nav-item{
+  display:grid;grid-template-columns:6px 1fr auto;gap:8px;align-items:center;
+  padding:7px 10px;border-radius:6px;text-decoration:none;
+  color:var(--text2);font-size:12px;font-weight:500;
+  transition:background .12s,color .12s;
+}
+.plat-detail-nav-item .pdn-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--ccol);
+  box-shadow:0 0 6px color-mix(in srgb,var(--ccol) 50%,transparent);
+}
+.plat-detail-nav-item .pdn-meta{
+  font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;
+  padding:1px 6px;border-radius:4px;background:var(--bg4);
+}
+.plat-detail-nav-item:hover{background:var(--bg-hover);color:var(--text);}
+.plat-detail-nav-item.active{
+  background:var(--bg4);color:var(--text);
+  box-shadow:inset 2px 0 0 var(--ccol);
+}
+.plat-detail-nav-item.active .pdn-meta{background:var(--bg5);color:var(--text);}
+@media (max-width:900px){
+  .plat-detail-layout{grid-template-columns:1fr;}
+  .plat-detail-nav{
+    position:relative;top:auto;max-height:none;overflow:visible;
+  }
+  .plat-detail-nav-list{flex-direction:row;flex-wrap:wrap;gap:6px;}
+  .plat-detail-nav-item{padding:6px 10px;flex:0 0 auto;}
+  .plat-detail-nav-item .pdn-meta{margin-left:4px;}
+}
+.plat-detail-cats{display:grid;gap:10px;scroll-margin-top:64px;}
+.plat-detail-cat{scroll-margin-top:64px;}
 .plat-detail-cat{
   background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
   padding:16px 18px;
@@ -969,17 +1034,20 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 @keyframes sp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes sp-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 
-body{background:
-  radial-gradient(1200px 600px at 85% -10%,var(--accent-glow),transparent 60%),
-  radial-gradient(900px 500px at -10% 90%,rgba(77,166,255,.05),transparent 60%),
-  var(--bg);
-  background-attachment:fixed;}
+body{
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%,var(--accent-glow),transparent 60%),
+    radial-gradient(900px 500px at -10% 90%,rgba(77,166,255,.05),transparent 60%);
+  background-attachment:fixed;
+}
 
-:root[data-theme="light"] body{background:
-  radial-gradient(1200px 600px at 85% -10%,rgba(31,159,98,.08),transparent 60%),
-  radial-gradient(900px 500px at -10% 90%,rgba(77,166,255,.08),transparent 60%),
-  var(--bg);
-  background-attachment:fixed;}
+:root[data-theme="light"] body{
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%,rgba(31,159,98,.08),transparent 60%),
+    radial-gradient(900px 500px at -10% 90%,rgba(77,166,255,.08),transparent 60%);
+}
 
 .dash-hero,.compare-hero{
   background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 55%,var(--bg2) 100%);
@@ -2084,6 +2152,12 @@ function renderCompareTable(){
       const chip=document.createElement('span');
       chip.className=`chip ${v.s}${v.note?' has-note':''}`;
       chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${SL[v.s]}</span>`;
+      if(v.note){
+        chip.setAttribute('data-tip',v.note);
+        chip.setAttribute('aria-label',`${SL[v.s]}: ${v.note}`);
+      }else{
+        chip.setAttribute('aria-label',SL[v.s]);
+      }
       chip.onclick=(e)=>{e.stopPropagation();showPanel(p.name,name,v.note,v.s);};
       td.appendChild(chip);tr.appendChild(td);
     });
@@ -2417,12 +2491,30 @@ function showPlatformDetail(platId){
         <div class="plat-detail-met"><div class="plat-detail-met-v">${cnt.u}</div><div class="plat-detail-met-l">Нет данных</div></div>
       </div>
     </div>
-    <div class="plat-detail-cats">`;
+    <div class="plat-detail-layout">
+      <aside class="plat-detail-nav" aria-label="Категории">
+        <div class="plat-detail-nav-title">Разделы</div>
+        <div class="plat-detail-nav-list">`;
+
+  CO.forEach(cat=>{
+    const cntC=countsByCat(cat,platId);
+    const feats=D.filter(f=>f[0]===cat);
+    if(!feats.length)return;
+    html+=`<a class="plat-detail-nav-item" href="#cat-${cat}-${platId}" data-target="cat-${cat}-${platId}" style="--ccol:${CC[cat]}">
+      <span class="pdn-dot"></span>
+      <span class="pdn-label">${CATS[cat]}</span>
+      <span class="pdn-meta">${cntC.y+cntC.p+cntC.n}</span>
+    </a>`;
+  });
+  html+=`</div>
+      </aside>
+      <div class="plat-detail-cats">`;
 
   CO.forEach(cat=>{
     const feats=D.filter(f=>f[0]===cat);
+    if(!feats.length)return;
     const cntC=countsByCat(cat,platId);
-    html+=`<div class="plat-detail-cat">
+    html+=`<section class="plat-detail-cat" id="cat-${cat}-${platId}" data-cat="${cat}">
       <div class="plat-detail-cat-head">
         <div class="plat-detail-cat-title"><span class="plat-detail-cat-dot" style="background:${CC[cat]}"></span>${CATS[cat]}</div>
         <div class="plat-detail-cat-counts">
@@ -2442,12 +2534,12 @@ function showPlatformDetail(platId){
         <span class="chip ${v.s}" data-didx="${dataIdx}" data-plat="${platId}" role="button"><span class="chip-icon">${SI[v.s]}</span>${SL[v.s]}</span>
       </div>`;
     });
-    html+='</div>';
+    html+='</section>';
   });
-  html+='</div>';
+  html+='</div></div>';
 
   c.innerHTML=html;
-  // Attach click handlers safely via delegation
+  // chip → side panel
   c.querySelectorAll('.plat-detail-feat .chip[data-didx]').forEach(chip=>{
     chip.addEventListener('click',()=>{
       const didx=parseInt(chip.dataset.didx,10);
@@ -2458,6 +2550,27 @@ function showPlatformDetail(platId){
       showPanel(pl.name,feat[1],v.note,v.s);
     });
   });
+  // smooth scroll on nav click + auto-active via IntersectionObserver
+  const navItems=c.querySelectorAll('.plat-detail-nav-item');
+  navItems.forEach(a=>{
+    a.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const t=document.getElementById(a.dataset.target);
+      if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+  if('IntersectionObserver' in window){
+    const sections=c.querySelectorAll('.plat-detail-cat[id]');
+    const setActive=(id)=>{
+      navItems.forEach(a=>a.classList.toggle('active',a.dataset.target===id));
+    };
+    const io=new IntersectionObserver((entries)=>{
+      const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);
+      if(visible[0])setActive(visible[0].target.id);
+    },{rootMargin:'-30% 0px -60% 0px',threshold:0});
+    sections.forEach(s=>io.observe(s));
+    if(sections[0])setActive(sections[0].id);
+  }
   window.scrollTo(0,0);
 }
 
