@@ -598,12 +598,37 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
    COMPARE VIEW
 ═══════════════════════════════════════ */
 .compare-wrap{padding:24px;max-width:1600px;margin:0 auto;}
-.compare-hero{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
-  padding:20px 24px;margin-bottom:20px;
+.plat-list-hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 55%,var(--bg2) 100%);
+  border:1px solid var(--border2);border-radius:var(--r3);
+  padding:24px 28px;margin-bottom:22px;
+  box-shadow:0 18px 50px -28px rgba(0,0,0,.5),0 0 0 1px var(--accent-glow) inset;
 }
-.compare-hero h2{font-size:16px;font-weight:600;margin-bottom:6px;}
-.compare-hero p{color:var(--muted);font-size:13px;}
+.plat-list-hero::after{
+  content:"";position:absolute;inset:-30%;z-index:0;pointer-events:none;
+  background:conic-gradient(from 90deg,transparent 0 30%,var(--accent-glow) 40% 55%,transparent 65% 100%);
+  opacity:.3;filter:blur(50px);animation:sp-aurora 26s linear infinite reverse;
+}
+.plat-list-hero>*{position:relative;z-index:1;}
+.plat-list-hero h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;}
+.plat-list-hero p{color:var(--muted);font-size:13px;max-width:760px;}
+@media (prefers-reduced-motion:reduce){.plat-list-hero::after,.compare-hero::after{animation:none;}}
+.compare-hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 55%,var(--bg2) 100%);
+  border:1px solid var(--border2);border-radius:var(--r3);
+  padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 18px 50px -28px rgba(0,0,0,.5),0 0 0 1px var(--accent-glow) inset;
+}
+.compare-hero::after{
+  content:"";position:absolute;inset:-30%;z-index:0;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 30%,var(--accent-glow) 40% 55%,transparent 65% 100%);
+  opacity:.3;filter:blur(50px);animation:sp-aurora 24s linear infinite;
+}
+.compare-hero>*{position:relative;z-index:1;}
+.compare-hero h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;}
+.compare-hero p{color:var(--muted);font-size:13px;max-width:760px;}
 .compare-plat-sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
 @media (max-width:640px){
   .compare-plat-sel{
@@ -635,6 +660,14 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;
 }
 .compare-controls .quick-btn.diff-on{border-color:var(--info);color:var(--info);background:rgba(77,166,255,.1);}
+.quick-btn-share{border-color:var(--border3)!important;color:var(--text2)!important;}
+.quick-btn-share:hover{border-color:var(--info)!important;color:var(--info)!important;}
+.quick-btn-share.copied{border-color:var(--accent)!important;color:var(--accent)!important;background:var(--accent-dim)!important;}
+.quick-btn-export{
+  background:linear-gradient(135deg,var(--accent-dim) 0%,rgba(77,166,255,.08) 100%)!important;
+  border-color:var(--accent-d)!important;color:var(--accent)!important;font-weight:700!important;
+}
+.quick-btn-export:hover{box-shadow:0 8px 22px -10px var(--accent);transform:translateY(-1px);}
 .cmp-stats{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
 .cmp-stats strong{color:var(--text);font-weight:700;}
 .cmp-stats .cmp-stats-diff{color:var(--accent);}
@@ -890,13 +923,44 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   .pal-foot{flex-wrap:wrap;gap:8px;font-size:10px;}
 }
 
+/* print-only header (rendered in DOM but hidden on screen) */
+.print-header{display:none;}
 @media print{
-  .header,.matrix-controls,.cat-filter,#panel,#backdrop,.tabs,.iconbtn,.search,.pal,.pal-backdrop{display:none!important;}
-  .view{display:block!important;}
-  #view-matrix{page-break-before:always;}
-  .twrap{max-height:none;overflow:visible;}
-  table{width:100%!important;}
+  /* hide chrome */
+  .ticker,.header,.matrix-controls,.cat-filter,#panel,#backdrop,.tabs,.iconbtn,.search,.pal,.pal-backdrop,.compare-controls,.cmp-cats,.cmp-legend,.cmp-stats,.bento-action,details,.flag,.scenarios,.section-head,.bento,.dash-details,#view-dash:not(.active),#view-matrix:not(.active),#view-platforms:not(.active),body::before{display:none!important;}
+  body{background:#fff!important;color:#000!important;font-size:11px;line-height:1.4;}
+  .view{display:none!important;}
+  .view.active{display:block!important;padding:0!important;}
+  .print-header{display:block!important;padding:18px 24px 12px;border-bottom:2px solid #000;margin-bottom:14px;}
+  .print-header .ph-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+  .print-header .ph-meta{font-size:10px;color:#444;margin-top:4px;font-variant-numeric:tabular-nums;}
+  .print-header .ph-source{font-size:9px;color:#666;margin-top:8px;}
+  .compare-hero{background:#fff!important;border:none!important;padding:0!important;margin-bottom:8px!important;box-shadow:none!important;}
+  .compare-hero h2{display:none;}
+  .compare-hero p{color:#444!important;font-size:10px;}
+  .compare-plat-sel{display:none;}
+  .cmp-table-wrap{overflow:visible!important;max-height:none!important;border:1px solid #000!important;}
+  .cmp-table{width:100%!important;font-size:10px;}
+  .cmp-table thead th{background:#f0f0f0!important;color:#000!important;border-bottom:1.5px solid #000!important;padding:8px 6px!important;}
+  .cmp-table tbody td{border-bottom:1px solid #ccc!important;padding:6px 6px!important;}
+  .chip{background:#fff!important;border:1px solid #999!important;color:#000!important;padding:2px 6px;border-radius:3px;}
+  .chip.y{border-color:#0a0!important;color:#070!important;}
+  .chip.p{border-color:#c80!important;color:#840!important;}
+  .chip.n{border-color:#a00!important;color:#700!important;}
+  .chip.w{border-color:#a80!important;color:#640!important;}
+  .chip.u{border-color:#888!important;color:#444!important;}
+  .cmp-cat-row{background:#eee!important;color:#000!important;font-weight:700!important;border-top:1px solid #000!important;}
+  .cmp-fc{background:#f0f0f0!important;color:#000!important;}
+  td.fn,th.fc{background:#fff!important;color:#000!important;}
+  .new-badge{display:none!important;}
+  /* page rules */
+  @page{size:A4 landscape;margin:12mm 10mm;}
+  thead{display:table-header-group;}
+  tr{page-break-inside:avoid;}
+  /* print-only footer */
+  .print-footer{display:block!important;font-size:9px;color:#444;text-align:center;margin-top:14px;padding-top:8px;border-top:1px solid #ccc;}
 }
+.print-footer{display:none;}
 
 /* ═══════════════════════════════════════
    MODERN POLISH — 2026 refresh
@@ -1142,6 +1206,13 @@ body{background:
 </style>
 </head>
 <body>
+
+<!-- PRINT-ONLY HEADER (hidden on screen) -->
+<div class="print-header">
+  <div class="ph-title">SmartPlayer · Сравнение платформ</div>
+  <div class="ph-meta" id="print-meta">—</div>
+  <div class="ph-source">Источник данных: <b>wiki.smartplayer.org</b> · presale-matrix-v4</div>
+</div>
 
 <!-- TICKER (Linear/Vercel-style status strip) -->
 <div class="ticker" role="status" aria-label="Статус данных">
@@ -1396,6 +1467,10 @@ body{background:
 <main id="view-platforms" class="view">
   <div class="platforms">
     <div id="platforms-list">
+      <div class="plat-list-hero">
+        <h2>Платформы</h2>
+        <p>Восемь платформ, на которых работает SmartPlayer. Карточка → подробный разбор: версии ОС, видео, sync, ограничения, ссылка в wiki.</p>
+      </div>
       <div class="plat-big-grid" id="plat-big-grid"></div>
     </div>
     <div id="platform-detail" class="plat-detail-view">
@@ -1418,6 +1493,8 @@ body{background:
       <button class="quick-btn" onclick="cmpSelectAll()">Все платформы</button>
       <button class="quick-btn" onclick="cmpReset()">По умолчанию</button>
       <button class="quick-btn" onclick="cmpClear()">× Очистить</button>
+      <button class="quick-btn quick-btn-share" onclick="cmpShareLink(this)" title="Скопировать ссылку с текущим выбором">🔗 Скопировать ссылку</button>
+      <button class="quick-btn quick-btn-export" onclick="cmpExport()" title="Сохранить текущий выбор как PDF / распечатать">📄 PDF для клиента</button>
       <span id="cmp-stats" class="cmp-stats" aria-live="polite"></span>
     </div>
     <div class="cmp-cats" id="cmp-cats" aria-label="Фильтр категорий"></div>
@@ -1839,7 +1916,8 @@ function countsByCat(cat,platId){
 // ═══════════════════════════════════════
 //  VIEW SWITCHING
 // ═══════════════════════════════════════
-function switchView(v){
+function switchView(v,opts){
+  opts=opts||{};
   // reset matrix-only filters when leaving matrix (prevent state leak)
   if(state.view==='matrix'&&v!=='matrix'){
     if(state.search){state.search='';const si=document.getElementById('si');if(si)si.value='';}
@@ -1854,7 +1932,47 @@ function switchView(v){
   if(v==='compare')renderCompare();
   window.scrollTo(0,0);
   closePanel();
+  if(!opts.skipURL)syncStateToURL();
 }
+
+// ═══════════════════════════════════════
+//  URL DEEP-LINK SYNC
+// ═══════════════════════════════════════
+let _urlSyncing=false;
+function syncStateToURL(){
+  if(_urlSyncing)return;
+  const p=new URLSearchParams();
+  if(state.view&&state.view!=='dash')p.set('v',state.view);
+  if(state.view==='compare'){
+    const sel=[...cmpSel].sort();
+    if(sel.length&&!(sel.length===2&&sel.includes('a')&&sel.includes('w')))p.set('cmp',sel.join(','));
+    if(cmpCatFilter.size)p.set('cat',[...cmpCatFilter].sort().join(','));
+    if(cmpDiffOnly)p.set('diff','1');
+  }
+  const q=p.toString();const url=q?'?'+q:location.pathname;
+  history.replaceState(null,'',url);
+}
+function syncURLToState(){
+  _urlSyncing=true;
+  try{
+    const p=new URLSearchParams(location.search);
+    const v=p.get('v');
+    if(v&&['matrix','platforms','compare'].includes(v))switchView(v,{skipURL:true});
+    if(p.get('cmp')){
+      const ids=p.get('cmp').split(',').filter(id=>PLATS.find(x=>x.id===id));
+      if(ids.length>=1){cmpSel=new Set(ids);}
+    }
+    if(p.get('cat')){
+      const ids=p.get('cat').split(',').filter(id=>CATS[id]);
+      cmpCatFilter=new Set(ids);
+    }
+    if(p.get('diff')==='1'){
+      cmpDiffOnly=true;const b=document.getElementById('cmp-diff-btn');if(b)b.classList.add('diff-on');
+    }
+    if(state.view==='compare')renderCompare();
+  }finally{_urlSyncing=false;}
+}
+window.addEventListener('popstate',syncURLToState);
 
 // ═══════════════════════════════════════
 //  COMPARE
@@ -1875,7 +1993,7 @@ function renderCmpCats(){
     b.onclick=()=>{
       if(isAll){cmpCatFilter.clear();}
       else{if(cmpCatFilter.has(id))cmpCatFilter.delete(id);else cmpCatFilter.add(id);}
-      renderCmpCats();renderCompareTable();
+      renderCmpCats();renderCompareTable();syncStateToURL();
     };
     wrap.appendChild(b);
   };
@@ -1906,6 +2024,7 @@ function renderCompareSelector(){
       }
       renderCompareSelector();
       renderCompareTable();
+      syncStateToURL();
     };
     wrap.appendChild(btn);
   });
@@ -1992,11 +2111,41 @@ function renderCompareTable(){
 function toggleCmpDiff(){
   cmpDiffOnly=!cmpDiffOnly;
   document.getElementById('cmp-diff-btn').classList.toggle('diff-on',cmpDiffOnly);
-  renderCompareTable();
+  renderCompareTable();syncStateToURL();
 }
-function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));renderCompareSelector();renderCompareTable();}
-function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();}
-function cmpClear(){cmpSel=new Set();cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();}
+function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));renderCompareSelector();renderCompareTable();syncStateToURL();}
+function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();syncStateToURL();}
+function cmpClear(){cmpSel=new Set();cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();syncStateToURL();}
+function cmpShareLink(btn){
+  syncStateToURL();
+  const url=location.href;
+  const finish=(ok)=>{
+    const orig=btn.textContent;
+    btn.textContent=ok?'✓ Ссылка скопирована':'⚠ Скопируйте вручную';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},1800);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>finish(true),()=>finish(false));
+  }else{
+    try{
+      const ta=document.createElement('textarea');ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      finish(true);
+    }catch(e){finish(false);prompt('Скопируйте ссылку:',url);}
+  }
+}
+function cmpExport(){
+  const sel=PLATS.filter(p=>cmpSel.has(p.id));
+  if(!sel.length){alert('Выберите хотя бы одну платформу для экспорта.');return;}
+  document.getElementById('print-meta').textContent=
+    `Сравнение: ${sel.map(p=>p.name).join(' · ')} · ${cmpDiffOnly?'только различия':'все строки'}`+
+    `${cmpCatFilter.size?' · '+[...cmpCatFilter].map(c=>CATS[c]).join(', '):''}`+
+    ` · ${new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}`;
+  document.body.classList.add('print-mode');
+  window.print();
+  setTimeout(()=>document.body.classList.remove('print-mode'),500);
+}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -2481,6 +2630,12 @@ if(!/Mac/i.test(navigator.platform)){const kh=document.getElementById('kbdhint')
 initTheme();
 renderDashboard();
 renderPlatforms();
+syncURLToState();
 </script>
+
+<div class="print-footer">
+  © SmartPlayer · Источник данных: wiki.smartplayer.org · Сгенерировано <span id="print-genat"></span>
+</div>
+<script>document.getElementById('print-genat').textContent=new Date().toLocaleDateString('ru-RU');</script>
 </body>
 </html>
