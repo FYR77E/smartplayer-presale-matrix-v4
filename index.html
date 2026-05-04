@@ -1223,18 +1223,72 @@ body{
 
 /* actions */
 .bento-actions{padding:18px 20px;}
-.bento-action-list{margin-top:6px;display:grid;gap:8px;}
+.bento-action-list{margin-top:10px;display:grid;gap:8px;}
 .bento-action{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r2);
-  background:var(--bg4);border:1px solid var(--border2);
-  font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;
-  text-align:left;font-family:inherit;width:100%;
-  transition:transform .15s,border-color .15s,color .15s,background .15s;
+  --acol:var(--accent);
+  position:relative;display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;
+  padding:11px 14px 11px 13px;border-radius:var(--r2);
+  background:linear-gradient(135deg,var(--bg4) 0%,var(--bg3) 100%);
+  border:1px solid var(--border2);
+  cursor:pointer;text-align:left;font-family:inherit;width:100%;
+  overflow:hidden;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .22s,background .18s;
 }
-.bento-action:hover{border-color:var(--accent);color:var(--text);background:var(--bg5);transform:translateX(3px);}
-.bento-action .ico{font-size:14px;}
-.bento-action .arrow{margin-left:auto;opacity:.4;transition:opacity .15s,transform .15s;}
-.bento-action:hover .arrow{opacity:1;transform:translateX(2px);}
+.bento-action::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--acol) 0%,color-mix(in srgb,var(--acol) 30%,transparent) 100%);
+  box-shadow:0 0 10px var(--acol);
+}
+.bento-action::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(360px 120px at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--acol) 14%,transparent),transparent 60%);
+  opacity:0;transition:opacity .25s ease;
+}
+.bento-action:hover{
+  border-color:color-mix(in srgb,var(--acol) 60%,var(--border3));
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px -16px color-mix(in srgb,var(--acol) 70%,transparent);
+}
+.bento-action:hover::after{opacity:1;}
+.bento-action:active{transform:translateY(0);}
+.bento-action.act-accent{--acol:var(--accent);}
+.bento-action.act-info{--acol:var(--info);}
+.bento-action.act-warn{--acol:var(--w);}
+.bento-action.act-muted{--acol:var(--border3);}
+
+.bento-action .act-ico{
+  position:relative;z-index:1;
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--acol) 18%,var(--bg5));
+  border:1px solid color-mix(in srgb,var(--acol) 35%,transparent);
+  color:var(--acol);font-size:15px;flex-shrink:0;
+}
+.bento-action .act-text{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+.bento-action .act-title{
+  font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bento-action .act-sub{
+  font-size:11px;color:var(--muted);line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bento-action .act-arrow{
+  position:relative;z-index:1;
+  color:var(--muted);font-size:14px;font-weight:600;
+  transition:transform .2s ease,color .2s ease;
+}
+.bento-action:hover .act-arrow{transform:translateX(3px);color:var(--acol);}
+
+@media (prefers-reduced-motion:reduce){
+  .bento-action{transition:none;}
+  .bento-action:hover{transform:none;}
+  .bento-action .act-arrow{transition:none;}
+  .bento-action::after{display:none;}
+}
 
 /* ranking */
 
@@ -1367,10 +1421,26 @@ body{
       <div class="bento-tile bento-actions">
         <div class="bento-tile-label"><span class="dot"></span>Быстрые сценарии</div>
         <div class="bento-action-list">
-          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['w','l']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">⚡</span>Windows vs Linux<span class="arrow">→</span></button>
-          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['a','t','o']);renderCompareSelector();renderCompareTable();},80)"><span class="ico">📱</span>Мобильные / ТВ<span class="arrow">→</span></button>
-          <button class="bento-action" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpDiffOnly=true;document.getElementById('cmp-diff-btn').classList.add('diff-on');renderCompareTable();},80)"><span class="ico">◈</span>Только различия<span class="arrow">→</span></button>
-          <button class="bento-action" type="button" onclick="switchView('matrix')"><span class="ico">▦</span>Полная матрица<span class="arrow">→</span></button>
+          <button class="bento-action act-accent" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['w','l']);renderCompareSelector();renderCompareTable();},80)">
+            <span class="act-ico">⚡</span>
+            <span class="act-text"><span class="act-title">Windows vs Linux</span><span class="act-sub">Десктопные ОС, общие функции и расхождения</span></span>
+            <span class="act-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="bento-action act-info" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['a','t','o']);renderCompareSelector();renderCompareTable();},80)">
+            <span class="act-ico">📱</span>
+            <span class="act-text"><span class="act-title">Мобильные / ТВ</span><span class="act-sub">Android · Tizen · Orsay — встроенные платформы</span></span>
+            <span class="act-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="bento-action act-warn" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpDiffOnly=true;document.getElementById('cmp-diff-btn').classList.add('diff-on');renderCompareTable();},80)">
+            <span class="act-ico">◈</span>
+            <span class="act-text"><span class="act-title">Только различия</span><span class="act-sub">Скрыть совпадающие — найти узкие места</span></span>
+            <span class="act-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="bento-action act-muted" type="button" onclick="switchView('matrix')">
+            <span class="act-ico">▦</span>
+            <span class="act-text"><span class="act-title">Полная матрица</span><span class="act-sub">120 функций × 8 платформ — таблица</span></span>
+            <span class="act-arrow" aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
 
@@ -2316,6 +2386,15 @@ function renderBento(){
     });
     hero.addEventListener('mouseleave',()=>{hero.style.setProperty('--mx','30%');hero.style.setProperty('--my','20%');});
   }
+  // spotlight that follows cursor on each scenario CTA
+  document.querySelectorAll('.bento-action').forEach(a=>{
+    if(a._spot)return;a._spot=true;
+    a.addEventListener('mousemove',e=>{
+      const r=a.getBoundingClientRect();
+      a.style.setProperty('--mx',(e.clientX-r.left)+'px');
+      a.style.setProperty('--my',(e.clientY-r.top)+'px');
+    });
+  });
 }
 
 function renderDashboard(){
