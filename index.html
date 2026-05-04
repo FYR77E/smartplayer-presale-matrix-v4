@@ -464,6 +464,28 @@ tr.fr:hover{box-shadow:inset 3px 0 0 var(--accent);}
 
 td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 
+/* — Mobile matrix mode (≤640px): compact columns, icon-only chips — */
+@media (max-width:640px){
+  .twrap{max-height:calc(100vh - 180px);}
+  thead th{min-width:62px;padding:6px 3px;font-size:10px;}
+  thead th.fc{min-width:150px;max-width:150px;padding:6px 8px;}
+  .thp{padding-top:3px;margin-top:-8px;}
+  .thp .pn{font-size:10px;}
+  .thp .ps2{display:none;}
+  td.fn{min-width:150px;max-width:150px;padding:8px 8px;font-size:11px;line-height:1.35;}
+  td.sc{min-width:62px;padding:5px 2px;}
+  .chip{padding:3px 6px;font-size:10px;gap:0;border-radius:4px;}
+  .chip > span:not(.chip-icon){display:none;}
+  .chip-icon{font-size:11px;}
+  .chip.has-note::after{font-size:10px;margin-left:1px;}
+  .crow td{padding:6px 10px;font-size:9px;letter-spacing:.6px;}
+  .new-badge{display:none;}
+  .matrix-controls{padding:10px 12px;gap:6px;}
+  .matrix-controls .quick-btn{padding:6px 9px;font-size:11px;}
+  .cat-filter{padding:6px 12px;}
+  .cat-chip{padding:4px 8px;font-size:10px;}
+}
+
 .chip{
   display:inline-flex;align-items:center;gap:4px;
   padding:4px 9px;border-radius:5px;font-size:11px;font-weight:600;
