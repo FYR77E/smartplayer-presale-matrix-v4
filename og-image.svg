@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="t d">
+  <title id="t">SmartPlayer · Presale Matrix</title>
+  <desc id="d">Совместимость 8 платформ × 120 функций SmartPlayer</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="55%" stop-color="#16161e"/>
+      <stop offset="100%" stop-color="#0f0f17"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="78%" cy="22%" r="55%">
+      <stop offset="0%" stop-color="#3dd68c" stop-opacity="0.28"/>
+      <stop offset="60%" stop-color="#3dd68c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="18%" cy="82%" r="50%">
+      <stop offset="0%" stop-color="#4da6ff" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#4da6ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3dd68c"/>
+      <stop offset="100%" stop-color="#4da6ff"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1f1f2b" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.5"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+
+  <!-- top accent line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#acc)"/>
+
+  <!-- live status pill -->
+  <g transform="translate(72,82)">
+    <rect x="0" y="0" width="186" height="34" rx="17" fill="#16161e" stroke="#1f1f2b"/>
+    <circle cx="22" cy="17" r="5" fill="#3dd68c">
+      <animate attributeName="opacity" values="1;0.35;1" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="38" y="22" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#c8c8d8" letter-spacing="1">LIVE · WIKI-FACTS</text>
+  </g>
+
+  <!-- title -->
+  <text x="72" y="200" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="78" font-weight="700" fill="#f0f0f5" letter-spacing="-2">SmartPlayer</text>
+  <text x="72" y="278" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="46" font-weight="500" fill="#c8c8d8" letter-spacing="-0.5">Presale Matrix · совместимость платформ</text>
+
+  <!-- stats row -->
+  <g transform="translate(72,360)">
+    <g>
+      <text x="0" y="0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="76" font-weight="800" fill="url(#acc)" font-variant-numeric="tabular-nums" letter-spacing="-2">8</text>
+      <text x="0" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#6e6e96" letter-spacing="2">ПЛАТФОРМ</text>
+    </g>
+    <g transform="translate(220,0)">
+      <text x="0" y="0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="76" font-weight="800" fill="url(#acc)" font-variant-numeric="tabular-nums" letter-spacing="-2">120</text>
+      <text x="0" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#6e6e96" letter-spacing="2">ФУНКЦИЙ</text>
+    </g>
+    <g transform="translate(490,0)">
+      <text x="0" y="0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="76" font-weight="800" fill="url(#acc)" font-variant-numeric="tabular-nums" letter-spacing="-2">14</text>
+      <text x="0" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#6e6e96" letter-spacing="2">КАТЕГОРИЙ</text>
+    </g>
+  </g>
+
+  <!-- platform pills row -->
+  <g transform="translate(72,490)" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="14" font-weight="600">
+    <g transform="translate(0,0)"><rect width="106" height="36" rx="10" fill="#1d1d28" stroke="#3dd68c" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#3dd68c"/><text x="26" y="23" fill="#f0f0f5">Android</text></g>
+    <g transform="translate(120,0)"><rect width="106" height="36" rx="10" fill="#1d1d28" stroke="#4da6ff" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#4da6ff"/><text x="26" y="23" fill="#f0f0f5">Windows</text></g>
+    <g transform="translate(240,0)"><rect width="86" height="36" rx="10" fill="#1d1d28" stroke="#f0a030" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#f0a030"/><text x="26" y="23" fill="#f0f0f5">Linux</text></g>
+    <g transform="translate(340,0)"><rect width="100" height="36" rx="10" fill="#1d1d28" stroke="#a78bfa" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#a78bfa"/><text x="26" y="23" fill="#f0f0f5">Tizen</text></g>
+    <g transform="translate(454,0)"><rect width="100" height="36" rx="10" fill="#1d1d28" stroke="#e06040" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#e06040"/><text x="26" y="23" fill="#f0f0f5">WebOS</text></g>
+    <g transform="translate(568,0)"><rect width="116" height="36" rx="10" fill="#1d1d28" stroke="#f5c518" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#f5c518"/><text x="26" y="23" fill="#f0f0f5">Raspberry</text></g>
+    <g transform="translate(698,0)"><rect width="124" height="36" rx="10" fill="#1d1d28" stroke="#34d399" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#34d399"/><text x="26" y="23" fill="#f0f0f5">BrightSign</text></g>
+    <g transform="translate(836,0)"><rect width="98" height="36" rx="10" fill="#1d1d28" stroke="#7878a8" opacity="0.95"/><circle cx="14" cy="18" r="5" fill="#7878a8"/><text x="26" y="23" fill="#f0f0f5">Orsay</text></g>
+  </g>
+
+  <!-- footer -->
+  <text x="72" y="582" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif" font-size="14" font-weight="500" fill="#6e6e96" letter-spacing="0.4">smartplayer-presale-matrix-v4.vercel.app · источник данных wiki.smartplayer.org</text>
+</svg>

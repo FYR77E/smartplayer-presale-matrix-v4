@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://smartplayer-presale-matrix-v4.vercel.app/sitemap.xml
