@@ -847,15 +847,32 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 /* ═══════════════════════════════════════
    INTEGRATIONS SECTION
 ═══════════════════════════════════════ */
-.integ-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:32px;}
+.integ-intro{
+  margin:6px 20px 14px;padding:10px 14px;
+  background:var(--bg3);border-left:2px solid var(--accent);border-radius:0 var(--r) var(--r) 0;
+  font-size:12px;color:var(--text2);line-height:1.5;
+}
+.integ-intro b{color:var(--text);font-weight:600;}
+.integ-section-label{
+  margin:0 20px 10px;padding-top:6px;
+  font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.integ-section-label::before{
+  content:"";width:18px;height:1px;background:var(--accent);flex-shrink:0;
+}
+.integ-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin:0 20px 18px;}
+.integ-grid:last-of-type{margin-bottom:24px;}
 .integ-card{
   background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
-  padding:18px;border-left:3px solid var(--icolor,var(--accent));
+  padding:16px 18px;border-left:3px solid var(--icolor,var(--accent));
+  transition:border-color .15s,transform .15s;
 }
-.integ-card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.integ-icon{font-size:20px;line-height:1;}
+.integ-card:hover{border-color:var(--icolor,var(--border3));transform:translateY(-1px);}
+.integ-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.integ-icon{font-size:18px;line-height:1;}
 .integ-title{font-size:13px;font-weight:700;}
-.integ-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.integ-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
 .integ-list li{
   font-size:11px;color:var(--text2);display:flex;align-items:flex-start;gap:6px;line-height:1.5;
 }
@@ -1427,9 +1444,14 @@ body{
     </details>
 
     <details class="dash-details">
-      <summary><span class="ddt-icon">🧩</span><span class="ddt-title">Экосистема интеграций</span><span class="ddt-meta">дисплеи · сервер · API · видеоаналитика · <a href="https://wiki.smartplayer.org/index.php?title=Integrations" target="_blank" onclick="event.stopPropagation()">wiki ↗</a></span><span class="ddt-chev">▾</span></summary>
-    <div class="integ-grid">
+      <summary><span class="ddt-icon">🧩</span><span class="ddt-title">Экосистема интеграций</span><span class="ddt-meta">железо · сервер · API · аналитика · <a href="https://wiki.smartplayer.org/index.php?title=Integrations" target="_blank" onclick="event.stopPropagation()">wiki ↗</a></span><span class="ddt-chev">▾</span></summary>
 
+    <p class="integ-intro">
+      Раскройте, когда клиент спрашивает <b>«А с этим железом совместимо?»</b> или <b>«А куда ставить сервер?»</b>. Карточки разбиты по двум вопросам: <b>что подключаем</b> к SmartPlayer (физическое железо, аналитика) и <b>где он работает</b> (инфраструктура, протоколы, уведомления).
+    </p>
+
+    <div class="integ-section-label">Что подключаем</div>
+    <div class="integ-grid">
       <div class="integ-card" style="--icolor:#a78bfa">
         <div class="integ-card-head"><span class="integ-icon">🖥</span><div class="integ-title">Поддерживаемые дисплеи</div></div>
         <ul class="integ-list">
@@ -1437,32 +1459,47 @@ body{
           <li><strong>LG</strong> <span>WebOS 2.0–4.1 · серии SM/UH/UM/EF/EG/EJ/EV · 43–98" профессиональные</span></li>
           <li><strong>BenQ</strong> <span>Android 1.0.2.5+ · серии BH24/28/35/38, ST4301K, ST5501K</span></li>
           <li><strong>Philips</strong> <span>Android 2.03+ · BDL3550Q</span></li>
-          <li><strong>Novastar Taurus</strong> <span>TB30 · установка через Viplex Express · макс. 960×750px, 4 ГБ контента</span></li>
+          <li><strong>Novastar Taurus</strong> <span>TB30 · Viplex Express · макс. 960×750px, 4 ГБ</span></li>
           <li><strong>Colorlight A35</strong> <span>Установка через специальный гайд</span></li>
           <li><strong>Lumien / Hisense / HikVision</strong> <span>профессиональные панели</span></li>
         </ul>
       </div>
 
-      <div class="integ-card" style="--icolor:#3dd68c">
-        <div class="integ-card-head"><span class="integ-icon">🖧</span><div class="integ-title">Серверная инфраструктура</div></div>
+      <div class="integ-card" style="--icolor:#f0a030">
+        <div class="integ-card-head"><span class="integ-icon">⚙️</span><div class="integ-title">Аппаратные интеграции</div></div>
         <ul class="integ-list">
-          <li><strong>Облако</strong> <span>Россия, Казахстан, Индия, США · cms.smartplayer.org</span></li>
-          <li><strong>Локальный сервер</strong> <span>Ubuntu Server 24.04 LTS · Astra Linux 1.7 / 1.8</span></li>
-          <li><strong>Виртуализация</strong> <span>VMware (VMDK-образ) · Hyper-V (доп. оплата)</span></li>
-          <li><strong>Кластер</strong> <span>Master + Worker-ноды · до 5000 устройств · S3-хранилище</span></li>
-          <li><strong>Мощности</strong> <span>200 экранов → 4 ядра / 8 ГБ · 5000 экранов → 12 ядер / 52 ГБ</span></li>
-          <li><strong>Порты</strong> <span>80 (HTTP) / 443 (HTTPS) · WebSocket WS/WSS · GlobalSign для HTTPS</span></li>
+          <li><strong>Matrox</strong> <span>Только Windows · спец. сборка · запрашивать у менеджера</span></li>
+          <li><strong>RFID Touch&amp;Watch</strong> <span>Только Windows · считыватель RFID + триггеры</span></li>
+          <li><strong>COM-порты</strong> <span>RS-232 / RS-485 / RS-422 (все платформы кроме BrightSign)</span></li>
+          <li><strong>GPIO</strong> <span>Триггеры по входу/выходу</span></li>
+          <li><strong>Wake-on-LAN</strong> <span>Удалённое включение выключенных устройств</span></li>
+          <li><strong>HDMI CEC</strong> <span>НЕ поддерживается — управление ТВ через RS-232</span></li>
         </ul>
       </div>
 
       <div class="integ-card" style="--icolor:#80b040">
         <div class="integ-card-head"><span class="integ-icon">👁</span><div class="integ-title">Видеоаналитика</div></div>
         <ul class="integ-list">
-          <li><strong>NtechLab</strong> <span>ntechlab.ru · платно · только Ubuntu · распознавание лиц, пол, возраст</span></li>
-          <li><strong>Intel OpenVino</strong> <span>Бесплатно · Win10 + Ubuntu · оптимизирован под Intel NUC</span></li>
-          <li><strong>OpenCV</strong> <span>Бесплатно · Win10 + Ubuntu · наименее точный</span></li>
-          <li><strong>USB-камеры</strong> <span>Logitech HD Pro C910, C920, C270, C310</span></li>
-          <li><strong>Функции</strong> <span>Смена контента по полу/возрасту · тепловые карты посещаемости</span></li>
+          <li><strong>NtechLab</strong> <span>платно · только Ubuntu · лица, пол, возраст</span></li>
+          <li><strong>Intel OpenVino</strong> <span>бесплатно · Win10 / Ubuntu · оптимизирован под Intel NUC</span></li>
+          <li><strong>OpenCV</strong> <span>бесплатно · Win10 / Ubuntu · базовая точность</span></li>
+          <li><strong>USB-камеры</strong> <span>Logitech HD Pro C910 / C920 / C270 / C310</span></li>
+          <li><strong>Функции</strong> <span>смена контента по полу/возрасту · тепловые карты</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="integ-section-label">Где работает</div>
+    <div class="integ-grid">
+      <div class="integ-card" style="--icolor:#3dd68c">
+        <div class="integ-card-head"><span class="integ-icon">🖧</span><div class="integ-title">Серверная инфраструктура</div></div>
+        <ul class="integ-list">
+          <li><strong>Облако</strong> <span>Россия, Казахстан, Индия, США · cms.smartplayer.org</span></li>
+          <li><strong>Локальный сервер</strong> <span>Ubuntu Server 24.04 LTS · Astra Linux 1.7 / 1.8</span></li>
+          <li><strong>Виртуализация</strong> <span>VMware (VMDK) · Hyper-V (доп. оплата)</span></li>
+          <li><strong>Кластер</strong> <span>Master + Worker · до 5000 устройств · S3</span></li>
+          <li><strong>Мощности</strong> <span>200 экранов → 4 ядра/8 ГБ · 5000 → 12 ядер/52 ГБ</span></li>
+          <li><strong>Порты</strong> <span>80 (HTTP) / 443 (HTTPS) · WebSocket WS/WSS</span></li>
         </ul>
       </div>
 
@@ -1471,35 +1508,22 @@ body{
         <ul class="integ-list">
           <li><strong>Видеопотоки</strong> <span>RTSP · HLS · UDP · RTP · MPEG-TS · IPTV</span></li>
           <li><strong>Данные</strong> <span>REST API · WebSocket · SocketIO · FTP/FTPS · Google Drive · GSheets</span></li>
-          <li><strong>Форматы данных</strong> <span>JSON · XML · RSS · HTML5</span></li>
-          <li><strong>Сеть устройств</strong> <span>WebSocket WS/WSS · Multicast UDP 239.255.43.21 (синхронизация)</span></li>
+          <li><strong>Форматы</strong> <span>JSON · XML · RSS · HTML5</span></li>
+          <li><strong>Сеть устройств</strong> <span>Multicast UDP 239.255.43.21 (синхронизация)</span></li>
           <li><strong>Браузеры</strong> <span>Chrome 66+ · Firefox 59+ · Safari 11.1+ · Edge · Opera 52+</span></li>
-        </ul>
-      </div>
-
-      <div class="integ-card" style="--icolor:#f0a030">
-        <div class="integ-card-head"><span class="integ-icon">⚙️</span><div class="integ-title">Аппаратные интеграции</div></div>
-        <ul class="integ-list">
-          <li><strong>Matrox</strong> <span>Только Windows · специальная сборка SmartPlayer · запрашивать у менеджера</span></li>
-          <li><strong>RFID Touch&amp;Watch</strong> <span>Только Windows · считыватель RFID-меток + триггеры</span></li>
-          <li><strong>Последовательные порты</strong> <span>COM · RS-232 · RS-485 · RS-422 (все платформы кроме BrightSign)</span></li>
-          <li><strong>GPIO</strong> <span>Триггеры по входу/выходу</span></li>
-          <li><strong>Wake-on-LAN</strong> <span>Удалённое включение выключенных устройств</span></li>
-          <li><strong>HDMI CEC</strong> <span>НЕ поддерживается — только RS-232 для управления ТВ</span></li>
         </ul>
       </div>
 
       <div class="integ-card" style="--icolor:#e06040">
         <div class="integ-card-head"><span class="integ-icon">🔔</span><div class="integ-title">Уведомления и мониторинг</div></div>
         <ul class="integ-list">
-          <li><strong>Email</strong> <span>Устройство офлайн · ошибки · восстановление · настраиваемые часы доставки</span></li>
-          <li><strong>Telegram</strong> <span>Детектор чёрного экрана · по умолчанию отключён · активирует администратор</span></li>
-          <li><strong>Детектор чёрного экрана</strong> <span>Скриншот → анализ → подтверждение через 10 сек → уведомление</span></li>
-          <li><strong>Отчёты</strong> <span>Экспорт в Excel · Proof of Play · онлайн/офлайн · рекламные кампании · опросы</span></li>
-          <li><strong>АЗС (Gas Board)</strong> <span>Интеграция с контроллером клиента · управление ценами на топливо</span></li>
+          <li><strong>Email</strong> <span>устройство офлайн · ошибки · восстановление · часы доставки</span></li>
+          <li><strong>Telegram</strong> <span>детектор чёрного экрана · по умолчанию отключён</span></li>
+          <li><strong>Детектор чёрного экрана</strong> <span>скриншот → анализ → подтверждение 10 с → push</span></li>
+          <li><strong>Отчёты</strong> <span>Excel · Proof of Play · онлайн/офлайн · кампании · опросы</span></li>
+          <li><strong>АЗС (Gas Board)</strong> <span>интеграция с контроллером цен на топливо</span></li>
         </ul>
       </div>
-
     </div>
     </details>
   </div>
