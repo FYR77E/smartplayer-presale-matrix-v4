@@ -24,6 +24,7 @@
 <meta name="twitter:image" content="https://smartplayer-presale-matrix-v4.vercel.app/og-image.png">
 <meta name="twitter:image:alt" content="SmartPlayer Presale Matrix — совместимость 8 платформ × 120 функций">
 <link rel="canonical" href="https://smartplayer-presale-matrix-v4.vercel.app/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230a0a0f'/%3E%3Cpath%20d='M9%2010h14M9%2016h10M9%2022h6'%20stroke='%233dd68c'%20stroke-width='2.4'%20stroke-linecap='round'/%3E%3Ccircle%20cx='25'%20cy='22'%20r='2.2'%20fill='%234da6ff'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3f5f8" media="(prefers-color-scheme: light)">
 <script type="application/ld+json">
@@ -228,17 +229,17 @@ input{font-family:inherit;}
 }
 .brand-text{line-height:1.2;}
 .brand-title{font-size:14px;font-weight:600;letter-spacing:-.15px;}
-.brand-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.brand-sub{font-size:11px;color:var(--text2);margin-top:2px;}
 
 .tabs{display:flex;gap:2px;background:var(--bg3);padding:3px;border-radius:var(--r2);border:1px solid var(--border);}
 .tab{
   padding:7px 16px;font-size:12px;font-weight:500;
-  background:transparent;border:none;color:var(--muted);
+  background:transparent;border:none;color:var(--text2);
   border-radius:7px;transition:all .15s;
   display:flex;align-items:center;gap:6px;
 }
-.tab:hover{color:var(--text2);}
-.tab.active{background:var(--bg);color:var(--text);box-shadow:var(--tab-active-shadow);}
+.tab:hover{color:var(--text);}
+.tab.active{background:var(--bg);color:var(--text);box-shadow:var(--tab-active-shadow);font-weight:600;}
 .tab:focus-visible,.quick-btn:focus-visible,.iconbtn:focus-visible,.cplat-btn:focus-visible,.cat-chip:focus-visible,.cmp-cat-chip:focus-visible,.bento-action:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px;}
 *:focus{outline:none;}
 *:focus-visible{outline-offset:2px;}
@@ -256,7 +257,7 @@ input{font-family:inherit;}
 .search input{background:none;border:none;color:var(--text);font-size:13px;outline:none;width:100%;}
 .search input::placeholder{color:var(--muted);}
 .search kbd{
-  background:var(--bg);color:var(--muted);font-size:10px;font-family:var(--mono);
+  background:var(--bg);color:var(--text2);font-size:10px;font-family:var(--mono);
   padding:2px 6px;border-radius:3px;border:1px solid var(--border2);
 }
 
@@ -1430,18 +1431,18 @@ body{
     </div>
   </div>
 
-  <nav class="tabs" role="tablist">
-    <button class="tab active" data-view="dash" onclick="switchView('dash')">
-      <span class="tab-icon">◎</span>Обзор
+  <nav class="tabs" role="tablist" aria-label="Разделы">
+    <button class="tab active" role="tab" aria-selected="true" data-view="dash" onclick="switchView('dash')">
+      <span class="tab-icon" aria-hidden="true">◎</span>Обзор
     </button>
-    <button class="tab" data-view="matrix" onclick="switchView('matrix')">
-      <span class="tab-icon">▦</span>Матрица
+    <button class="tab" role="tab" aria-selected="false" data-view="matrix" onclick="switchView('matrix')">
+      <span class="tab-icon" aria-hidden="true">▦</span>Матрица
     </button>
-    <button class="tab" data-view="platforms" onclick="switchView('platforms')">
-      <span class="tab-icon">▤</span>Платформы
+    <button class="tab" role="tab" aria-selected="false" data-view="platforms" onclick="switchView('platforms')">
+      <span class="tab-icon" aria-hidden="true">▤</span>Платформы
     </button>
-    <button class="tab" data-view="compare" onclick="switchView('compare')">
-      <span class="tab-icon">⊞</span>Сравнение
+    <button class="tab" role="tab" aria-selected="false" data-view="compare" onclick="switchView('compare')">
+      <span class="tab-icon" aria-hidden="true">⊞</span>Сравнение
     </button>
   </nav>
 
@@ -1723,7 +1724,7 @@ body{
 
 <!-- COMMAND PALETTE (⌘K) -->
 <div id="palette-bd" class="pal-backdrop" onclick="closePalette()" aria-hidden="true"></div>
-<div id="palette" class="pal" role="dialog" aria-modal="true" aria-label="Командная панель" aria-hidden="true">
+<div id="palette" class="pal" role="dialog" aria-modal="true" aria-label="Командная панель" aria-hidden="true" inert>
   <div class="pal-input-wrap">
     <svg class="pal-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <input id="pal-q" type="text" placeholder="Найти функцию, платформу, категорию, сценарий…" autocomplete="off" spellcheck="false" oninput="palSearch()" onkeydown="palKey(event)">
@@ -1738,7 +1739,7 @@ body{
     <span class="pal-foot-meta" id="pal-count">0 совпадений</span>
   </div>
 </div>
-<aside id="panel" aria-hidden="true">
+<aside id="panel" aria-hidden="true" inert>
   <div class="panel-head">
     <div class="panel-head-t">
       <div id="pp"></div>
@@ -2090,11 +2091,14 @@ function updateThemeToggle(){
   const btn=document.getElementById('theme-toggle');
   if(!btn)return;
   const isLight=state.theme==='light';
+  const stateLabel=isLight?'Светлая':'Темная';
   document.getElementById('theme-toggle-icon').textContent=isLight?'☼':'☾';
-  document.getElementById('theme-toggle-label').textContent=isLight?'Светлая':'Темная';
+  document.getElementById('theme-toggle-label').textContent=stateLabel;
   btn.setAttribute('aria-pressed',String(isLight));
-  btn.setAttribute('title',isLight?'Переключить на темную тему':'Переключить на светлую тему');
-  btn.setAttribute('aria-label',btn.getAttribute('title'));
+  // aria-label includes the visible text verbatim (WCAG 2.5.3 label-in-name)
+  const ariaLabel=`${stateLabel} тема — переключить на ${isLight?'тёмную':'светлую'}`;
+  btn.setAttribute('title',ariaLabel);
+  btn.setAttribute('aria-label',ariaLabel);
 }
 
 function applyTheme(theme){
@@ -2132,7 +2136,7 @@ function switchView(v,opts){
     if(window._matrixRendered)renderMatrix();
   }
   state.view=v;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  document.querySelectorAll('.tab').forEach(t=>{const on=t.dataset.view===v;t.classList.toggle('active',on);t.setAttribute('aria-selected',on?'true':'false');});
   document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));
   if(v==='matrix'&&!window._matrixRendered){renderMatrix();window._matrixRendered=true;}
   if(v==='platforms')backToList();
@@ -2758,13 +2762,15 @@ function showPanel(plat,feat,note,s){
   }else{
     nn.innerHTML=`<p style="color:var(--muted)">${s==='y'?'Функция работает без ограничений на данной платформе.':'Нет дополнительных данных в документации.'}</p>`;
   }
-  document.getElementById('panel').classList.add('open');
+  const pn=document.getElementById('panel');
+  pn.classList.add('open');pn.setAttribute('aria-hidden','false');pn.removeAttribute('inert');
   document.getElementById('backdrop').classList.add('on');
   setTimeout(()=>{const cls=document.getElementById('pcl');if(cls)cls.focus();},80);
 }
 
 function closePanel(){
-  document.getElementById('panel').classList.remove('open');
+  const pn=document.getElementById('panel');
+  pn.classList.remove('open');pn.setAttribute('aria-hidden','true');pn.setAttribute('inert','');
   document.getElementById('backdrop').classList.remove('on');
   if(_lastFocus&&typeof _lastFocus.focus==='function'){try{_lastFocus.focus();}catch(e){}}
   _lastFocus=null;
@@ -2794,13 +2800,15 @@ function openPalette(){
   if(!palIdx.length)buildPalIdx();
   _palLastFocus=document.activeElement;
   document.getElementById('palette-bd').classList.add('on');
-  const p=document.getElementById('palette');p.classList.add('on');p.setAttribute('aria-hidden','false');
+  const p=document.getElementById('palette');
+  p.classList.add('on');p.setAttribute('aria-hidden','false');p.removeAttribute('inert');
   const q=document.getElementById('pal-q');q.value='';palSearch();
   setTimeout(()=>q.focus(),50);
 }
 function closePalette(){
   document.getElementById('palette-bd').classList.remove('on');
-  const p=document.getElementById('palette');p.classList.remove('on');p.setAttribute('aria-hidden','true');
+  const p=document.getElementById('palette');
+  p.classList.remove('on');p.setAttribute('aria-hidden','true');p.setAttribute('inert','');
   if(_palLastFocus&&typeof _palLastFocus.focus==='function'){try{_palLastFocus.focus();}catch(e){}}
 }
 function palSearch(){
