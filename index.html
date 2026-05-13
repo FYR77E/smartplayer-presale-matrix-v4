@@ -685,10 +685,14 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
 ═══════════════════════════════════════ */
 @media (max-width:900px){
   .header{grid-template-columns:1fr;gap:10px;}
-  .tabs{justify-content:center;}
+  .tabs{justify-content:center;flex-wrap:wrap;gap:4px;}
+  .tab{padding:6px 11px;font-size:11px;}
+  .tab-icon{display:none;}
   .search{min-width:unset;}
+  .search kbd{display:none;}
   .header-r{justify-content:space-between;}
-  .theme-toggle{min-width:auto;}
+  .theme-toggle{min-width:auto;padding:7px 8px;}
+  .theme-toggle .theme-label{display:none;}
   #panel{width:100vw;}
 }
 
@@ -1140,6 +1144,66 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
 /* ═══════════════════════════════════════
    COMMAND PALETTE — Linear/Raycast style
 ═══════════════════════════════════════ */
+/* — Keyboard shortcuts overlay — */
+.kbd-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  z-index:300;opacity:0;pointer-events:none;transition:opacity .16s ease;
+}
+.kbd-backdrop.on{opacity:1;pointer-events:auto;}
+.kbd-modal{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,calc(-50% + 8px));
+  width:min(540px,calc(100vw - 32px));max-height:84vh;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border3);border-radius:14px;
+  box-shadow:0 32px 80px -20px rgba(0,0,0,.7),0 0 0 1px var(--accent-glow) inset;
+  z-index:301;opacity:0;pointer-events:none;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .14s;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.kbd-modal.on{opacity:1;transform:translate(-50%,-50%);pointer-events:auto;}
+.kbd-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.kbd-title{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text);}
+.kbd-close{
+  background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;
+}
+.kbd-close:hover{background:var(--bg4);color:var(--text);}
+.kbd-body{padding:14px 18px;overflow-y:auto;flex:1;}
+.kbd-group{margin-bottom:18px;}
+.kbd-group:last-child{margin-bottom:0;}
+.kbd-group-title{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);
+}
+.kbd-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:7px 0;font-size:12.5px;color:var(--text2);
+}
+.kbd-keys{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;color:var(--muted);}
+.kbd-keys kbd{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:22px;height:22px;padding:0 6px;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text);
+  background:var(--bg4);border:1px solid var(--border2);border-radius:5px;
+  box-shadow:inset 0 -1px 0 var(--border),0 1px 0 var(--border);
+}
+.kbd-foot{
+  padding:10px 18px;border-top:1px solid var(--border);
+  font-size:11px;color:var(--muted);text-align:center;
+}
+.kbd-foot kbd{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:18px;height:18px;padding:0 5px;
+  font-family:var(--mono);font-size:10px;
+  background:var(--bg4);border:1px solid var(--border2);border-radius:4px;color:var(--text);
+}
+@media (max-width:640px){.kbd-modal{width:calc(100vw - 16px);}.kbd-row{font-size:11.5px;}}
+
 .pal-backdrop{
   position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
   z-index:300;opacity:0;pointer-events:none;transition:opacity .16s ease;
@@ -1217,6 +1281,24 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
 @keyframes sp-aurora{0%{transform:translate3d(-10%,-20%,0) rotate(0)}50%{transform:translate3d(10%,10%,0) rotate(180deg)}100%{transform:translate3d(-10%,-20%,0) rotate(360deg)}}
 @keyframes sp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes sp-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes sp-fade-up{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes sp-draw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+/* Bento tile staggered entrance */
+.bento-tile{animation:sp-fade-up .55s cubic-bezier(.2,.8,.2,1) both;}
+.bento-hero    {animation-delay:.05s;}
+.bento-signals {animation-delay:.12s;}
+.bento-cats    {animation-delay:.19s;}
+.bento-actions {animation-delay:.26s;}
+.bento-timeline{animation-delay:.33s;}
+
+/* Section-head accent underline draws in on view */
+.section-head::before{transform-origin:left center;animation:sp-draw .8s cubic-bezier(.22,1,.36,1) .15s both;}
+
+@media (prefers-reduced-motion:reduce){
+  .bento-tile{animation:none;}
+  .section-head::before{animation:none;}
+}
 
 body{
   background-color:var(--bg);
@@ -1819,6 +1901,35 @@ body{
 
 <!-- SIDE PANEL -->
 <div id="backdrop" onclick="closePanel()"></div>
+
+<!-- KEYBOARD SHORTCUTS OVERLAY (?) -->
+<div id="kbd-bd" class="kbd-backdrop" onclick="closeKbd()" aria-hidden="true"></div>
+<div id="kbd-modal" class="kbd-modal" role="dialog" aria-modal="true" aria-label="Горячие клавиши" aria-hidden="true" inert>
+  <div class="kbd-head">
+    <span class="kbd-title">Горячие клавиши</span>
+    <button class="kbd-close" type="button" onclick="closeKbd()" aria-label="Закрыть">✕</button>
+  </div>
+  <div class="kbd-body">
+    <div class="kbd-group">
+      <div class="kbd-group-title">Навигация</div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd></span><span>Обзор · Матрица · Платформы · Сравнение · Установка</span></div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>⌘</kbd><kbd>K</kbd> / <kbd>Ctrl</kbd><kbd>K</kbd></span><span>Командная палитра</span></div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>?</kbd></span><span>Открыть это окно</span></div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>Esc</kbd></span><span>Закрыть панель / палитру / эту справку</span></div>
+    </div>
+    <div class="kbd-group">
+      <div class="kbd-group-title">В палитре (⌘K)</div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>↑</kbd><kbd>↓</kbd></span><span>Перебор результатов</span></div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>↵</kbd></span><span>Перейти к выбранному</span></div>
+    </div>
+    <div class="kbd-group">
+      <div class="kbd-group-title">В разделах</div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>/</kbd></span><span>Фокус на поле поиска (Матрица)</span></div>
+      <div class="kbd-row"><span class="kbd-keys"><kbd>T</kbd></span><span>Переключить светлую / тёмную тему</span></div>
+    </div>
+  </div>
+  <div class="kbd-foot">Нажмите <kbd>?</kbd> в любой момент чтобы открыть эту справку</div>
+</div>
 
 <!-- COMMAND PALETTE (⌘K) -->
 <div id="palette-bd" class="pal-backdrop" onclick="closePalette()" aria-hidden="true"></div>
@@ -3376,16 +3487,34 @@ function palKey(e){
 // ═══════════════════════════════════════
 //  KEYBOARD
 // ═══════════════════════════════════════
+function openKbd(){
+  const m=document.getElementById('kbd-modal');const b=document.getElementById('kbd-bd');
+  if(!m)return;
+  b.classList.add('on');m.classList.add('on');m.setAttribute('aria-hidden','false');m.removeAttribute('inert');
+  setTimeout(()=>{const c=m.querySelector('.kbd-close');if(c)c.focus();},80);
+}
+function closeKbd(){
+  const m=document.getElementById('kbd-modal');const b=document.getElementById('kbd-bd');
+  if(!m)return;
+  b.classList.remove('on');m.classList.remove('on');m.setAttribute('aria-hidden','true');m.setAttribute('inert','');
+}
+
 document.addEventListener('keydown',e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openPalette();}
-  if(e.key==='Escape'){closePanel();closePalette();}
-  // 1–4 для переключения вкладок (только если фокус не в input)
-  if(!e.metaKey&&!e.ctrlKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'){
-    if(e.key==='1')switchView('dash');
-    if(e.key==='2')switchView('matrix');
-    if(e.key==='3')switchView('platforms');
-    if(e.key==='4')switchView('compare');
-  }
+  // Modifier shortcuts (work everywhere)
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openPalette();return;}
+  if(e.key==='Escape'){closePanel();closePalette();closeKbd();return;}
+  // Plain shortcuts — only when focus is not in input/textarea/contenteditable
+  const ae=document.activeElement;
+  const inField=ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.isContentEditable);
+  if(inField||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='?'||(e.shiftKey&&e.key==='/')){e.preventDefault();openKbd();return;}
+  if(e.key==='1'){e.preventDefault();switchView('dash');}
+  if(e.key==='2'){e.preventDefault();switchView('matrix');}
+  if(e.key==='3'){e.preventDefault();switchView('platforms');}
+  if(e.key==='4'){e.preventDefault();switchView('compare');}
+  if(e.key==='5'){e.preventDefault();switchView('install');}
+  if(e.key==='t'||e.key==='T'){e.preventDefault();toggleTheme();}
+  if(e.key==='/'){e.preventDefault();openPalette();}
 });
 // Open palette on header search click
 document.getElementById('si').addEventListener('focus',e=>{e.target.blur();openPalette();});
