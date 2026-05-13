@@ -231,13 +231,23 @@ input{font-family:inherit;}
 
 .tabs{display:flex;gap:2px;background:var(--bg3);padding:3px;border-radius:var(--r2);border:1px solid var(--border);}
 .tab{
+  position:relative;
   padding:7px 16px;font-size:12px;font-weight:500;
   background:transparent;border:none;color:var(--text2);
-  border-radius:7px;transition:all .15s;
-  display:flex;align-items:center;gap:6px;
+  border-radius:7px;
+  transition:color .18s ease,background .18s ease,transform .12s ease;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
 }
-.tab:hover{color:var(--text);}
+.tab:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.tab:active{transform:scale(.97);}
 .tab.active{background:var(--bg);color:var(--text);box-shadow:var(--tab-active-shadow);font-weight:600;}
+.tab.active::after{
+  content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
+  width:24px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--accent),var(--info));
+  box-shadow:0 0 8px var(--accent-glow);
+}
+:root[data-theme="light"] .tab:hover{background:rgba(15,23,42,.04);}
 .tab:focus-visible,.quick-btn:focus-visible,.iconbtn:focus-visible,.cplat-btn:focus-visible,.cat-chip:focus-visible,.cmp-cat-chip:focus-visible,.bento-action:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:7px;}
 *:focus{outline:none;}
 *:focus-visible{outline-offset:2px;}
@@ -659,10 +669,16 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
 /* ═══════════════════════════════════════
    SCROLLBAR
 ═══════════════════════════════════════ */
-::-webkit-scrollbar{width:8px;height:8px;}
+html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
+::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:4px;border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb{
+  background:var(--bg5);border-radius:5px;border:2px solid var(--bg);
+  transition:background .15s;
+}
 ::-webkit-scrollbar-thumb:hover{background:var(--border3);}
+::-webkit-scrollbar-thumb:active{background:var(--accent);}
+::-webkit-scrollbar-corner{background:var(--bg);}
 
 /* ═══════════════════════════════════════
    RESPONSIVE
@@ -709,7 +725,19 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   transition:transform .15s,border-color .15s,color .15s,background .15s;
 }
 .install-nav-btn:hover{transform:translateY(-1px);border-color:var(--icol,var(--accent));color:var(--text);background:var(--bg4);}
-.install-nav-dot{width:7px;height:7px;border-radius:50%;background:var(--icol,var(--accent));box-shadow:0 0 6px var(--icol,var(--accent));flex-shrink:0;}
+.install-nav-btn.active{
+  border-color:var(--icol,var(--accent));
+  background:color-mix(in srgb,var(--icol,var(--accent)) 14%,var(--bg3));
+  color:var(--text);
+  box-shadow:0 4px 14px -8px var(--icol,var(--accent));
+}
+.install-nav-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--icol,var(--accent));
+  box-shadow:0 0 6px var(--icol,var(--accent));flex-shrink:0;
+  transition:transform .15s;
+}
+.install-nav-btn.active .install-nav-dot{transform:scale(1.3);}
+.install-nav-btn:focus-visible{outline:2px solid var(--icol,var(--accent));outline-offset:2px;}
 
 /* sections grid */
 .install-sections{display:grid;grid-template-columns:1fr;gap:16px;}
@@ -789,6 +817,11 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   font-size:12px;line-height:1.5;color:var(--text2);
   padding:9px 11px;border-radius:var(--r);background:var(--bg3);
   border:1px solid var(--border);
+  transition:border-color .15s,background .15s;
+}
+.install-step:hover{
+  border-color:color-mix(in srgb,var(--icol,var(--accent)) 35%,var(--border));
+  background:var(--bg4);
 }
 .install-step-num{
   width:22px;height:22px;border-radius:6px;
@@ -2700,12 +2733,15 @@ const INSTALL=[
     byManager:false,
     prereqs:[
       'sudo-доступ',
-      'Установленные GPU-драйверы',
+      'Установленные GPU-драйверы (обязательно <em>до</em> установки .deb)',
+      'Сессия X11 (Wayland может мешать управлению дисплеем)',
       'Отключённый screensaver и автосон',
       'Отключённые системные уведомления'
     ],
     steps:[
       'Скачать <code>SmartPlayer_*.deb</code>',
+      'Установить GPU-драйверы под вашу видеокарту',
+      'В экране входа выбрать сессию «Ubuntu on Xorg» (или «X11»), а не Wayland',
       'Установить пакет: <code>sudo dpkg -i SmartPlayer_*.deb</code>',
       'Дозагрузить зависимости: <code>sudo apt-get install -f</code>',
       'Запустить через <code>/usr/bin/SmartPlayer/SmartPlayer.sh</code>',
@@ -2716,7 +2752,8 @@ const INSTALL=[
       'Для выхода из киоска: <code>Ctrl + F12</code>'
     ],
     gotchas:[
-      'На Wayland может не работать отключение дисплея по таймеру — лучше использовать X11',
+      'Если приложение не отвечает при запуске — переключиться с Wayland на X11 на экране входа',
+      'Без установленных GPU-драйверов воспроизведение видео будет тормозить',
       'Одновременных видео меньше, чем на Windows: 1×4K или 2×Full HD'
     ],
     wiki:'https://wiki.smartplayer.org/index.php/Linux'
@@ -2813,27 +2850,31 @@ const INSTALL=[
   },
   {
     id:'o', name:'Samsung Orsay (SSSP 2-3)', icon:'◇', col:'#7878a8',
-    format:'reconfig MagicInfo', size:'—', deploy:'embedded · legacy',
+    format:'URL Address Launch', size:'—', deploy:'embedded · legacy',
     osMin:'SSSP 2.0 / 3.0 (Orsay OS)',
     hw:'Профессиональная панель Samsung на Orsay',
     byManager:true,
     prereqs:[
-      'Существующая инсталляция Samsung MagicInfo',
-      'Доступ к админ-меню Orsay'
+      'Подключение Ethernet (рекомендуется) или Wi-Fi',
+      'Доступ к сервисному меню через пульт',
+      'Параметры URL-адреса от менеджера SmartPlayer'
     ],
     steps:[
-      'Получить параметры подключения от менеджера SmartPlayer',
-      'Войти в админ-меню Orsay через стандартную процедуру MagicInfo',
-      'Перенаправить URL клиента на сервер SmartPlayer',
-      'Перезагрузить устройство и зарегистрировать по 9-значному коду'
+      'Включить телевизор',
+      'Нажать кнопку <code>[Menu]</code> на пульте',
+      'Перейти в раздел <code>System</code>',
+      'Выбрать пункт <code>URL Address Launch</code>',
+      'Ввести URL клиентского приложения от менеджера',
+      'Сохранить и перезагрузить — устройство покажет 9-значный код'
     ],
     post:[
-      'Проверить запуск SmartPlayer после рестарта',
+      'Зарегистрировать устройство в ЛК по коду',
       'Для синхронизации между Orsay-устройствами — стабильный IP'
     ],
     gotchas:[
-      'Свежая установка с нуля не предусмотрена — только переконфигурация существующего MagicInfo',
-      'Устаревшая платформа — поддерживается, но новые фичи могут не появляться'
+      'Меню на Orsay отличается от Tizen (нет URL Launcher как отдельного режима)',
+      'Устаревшая платформа — поддерживается, но новые фичи могут не появляться',
+      'PDF-контент не поддерживается на SSSP 4 (Orsay-вариант ограничен ещё сильнее)'
     ],
     wiki:'https://wiki.smartplayer.org/index.php/SSSP'
   },
@@ -2846,11 +2887,13 @@ const INSTALL=[
     prereqs:[
       'Подключение через RJ45 Ethernet',
       'Подходящая категория панели (Professional / Hospitality)',
-      'USB-флешка, отформатированная в FAT32 или exFAT'
+      'USB-флешка с файловой системой FAT32 (на macOS — формат MBR + FAT)',
+      'Для SM5B с прошивкой v3.00.25 и старше — <strong>сначала</strong> обновить до v3.00.40'
     ],
     steps:[
       'Получить файл прошивки <code>SmartPlayer_*.epk</code> у менеджера',
       'Создать на USB папку <code>/LG_MONITOR</code> и положить туда .epk',
+      'Для устаревших SM5B: положить промежуточную v3.00.40 .epk первой, обновиться, затем повторить с актуальной',
       'Включить телевизор',
       'Вставить USB — автоматически откроется меню обновления',
       'Нажать «Update» и дождаться перезагрузки',
@@ -2861,6 +2904,8 @@ const INSTALL=[
       'Обновить firmware панели до последней версии при необходимости'
     ],
     gotchas:[
+      'SM5B с прошивкой ≤ v3.00.25 не примет последнюю версию напрямую — двухшаговое обновление',
+      'На macOS USB должен быть отформатирован с MBR, иначе ТВ не увидит файл',
       'Self-signed сертификаты не поддерживаются',
       'Видео — только MP4 H.264, без отдельных audio-треков',
       'Длительность видео — только целые секунды (без миллисекунд)',
@@ -2875,26 +2920,28 @@ const INSTALL=[
     hw:'Pi3: 2+ ГБ RAM, 16+ ГБ SD · Pi4: 4+ ГБ RAM, 32+ ГБ SD',
     byManager:true,
     prereqs:[
-      'MicroSD-карта подходящего объёма',
-      'Картридер для записи образа',
-      'Win32 Disk Imager (Windows) или <code>dd</code> (macOS/Linux)'
+      'MicroSD-карта подходящего объёма (16+ ГБ для Pi3, 32+ ГБ для Pi4)',
+      'Картридер для записи образа на хост-машине',
+      'Программа записи: Win32 Disk Imager на Windows, <code>dd</code> или Raspberry Pi Imager на macOS/Linux'
     ],
     steps:[
       'Получить файл <code>raspi_smartplayer.img</code> у менеджера SmartPlayer',
-      'Windows: открыть Win32 Disk Imager, выбрать образ и SD-карту, нажать Write',
-      'macOS/Linux: <code>sudo dd bs=4M if=raspi_smartplayer.img of=/dev/sdx</code>',
+      '<strong>Windows:</strong> открыть Win32 Disk Imager, выбрать образ и SD-карту, нажать Write',
+      '<strong>macOS:</strong> определить диск <code>diskutil list</code> → размонтировать → <code>sudo dd bs=4m if=raspi_smartplayer.img of=/dev/rdiskN</code> (rdisk быстрее)',
+      '<strong>Linux:</strong> <code>sudo dd bs=4M if=raspi_smartplayer.img of=/dev/sdX status=progress</code> (X — буква SD-карты, проверить через <code>lsblk</code>)',
       'Извлечь SD-карту и вставить в Raspberry Pi',
-      'Подключить питание и сетевой кабель',
+      'Подключить питание и сетевой кабель Ethernet',
       'Дождаться отображения 9-значного кода на экране'
     ],
     post:[
       'Зарегистрировать устройство в ЛК по коду',
-      'Для синхронизации — одна подсеть и Ethernet'
+      'Для синхронизации — одна подсеть и Ethernet, не Wi-Fi'
     ],
     gotchas:[
+      'Перепроверить букву/имя диска перед <code>dd</code> — ошибка сотрёт системный диск',
       'Pi3 — максимум 1×Full HD@30 fps одновременно',
       'Pi4 — максимум 1×4K@30 fps (8000 kb/s, H.264/MP4)',
-      'Pi5 поддерживается с H2 2025 как X64-клиент — отдельный путь установки'
+      'Pi5 — отдельный путь: устанавливается как X64-клиент, образ из этой записи НЕ подходит'
     ],
     wiki:'https://wiki.smartplayer.org/index.php?title=Raspberry_Pi_3-4'
   },
@@ -2930,8 +2977,8 @@ const INSTALL=[
     wiki:'https://wiki.smartplayer.org/index.php/BrightSign_OS'
   },
   {
-    id:'server', name:'Локальный сервер', icon:'🖥', col:'#a78bfa',
-    format:'Direct / VMware / Hyper-V / Docker', size:'образ ~3 ГБ', deploy:'server',
+    id:'server', name:'Локальный сервер · 4 варианта', icon:'🖥', col:'#a78bfa',
+    format:'Direct · VMware · Hyper-V · Cluster', size:'образ ~3 ГБ', deploy:'server',
     osMin:'Ubuntu Server 24.04 LTS · Astra Linux 1.7/1.8',
     hw:'≤200 экр.: 4C/8 ГБ · 200–500: 6C/12 ГБ · 500–2000: 8C/24 ГБ',
     byManager:true,
@@ -2940,24 +2987,28 @@ const INSTALL=[
       'Статический IP и DNS-имя',
       'Открытые порты 80 (HTTP) и 443 (HTTPS) — входящие и исходящие',
       'Диск 100 ГБ – 1 ТБ',
-      'Trusted SSL-сертификат (например GlobalSign)'
+      'Trusted SSL-сертификат (например GlobalSign), <em>не</em> self-signed'
     ],
     steps:[
-      'Получить образ сервера у менеджера — варианты: bare-metal Linux, VMDK для VMware, Hyper-V, или Docker-стек',
-      'Развернуть согласно выбранному варианту: установить ОС → импортировать образ',
-      'Прописать DNS-имя и установить SSL-сертификат',
-      'Открыть порты 80/443 в firewall',
+      '<strong>Вариант 1 · Direct (bare-metal):</strong> установить Ubuntu Server 24.04 LTS или Astra Linux 1.7/1.8 → запросить у менеджера установочный пакет → выполнить инсталлятор',
+      '<strong>Вариант 2 · VMware:</strong> получить готовый <code>.vmdk</code>/<code>.ovf</code> образ → импортировать в ESXi/Workstation → запустить ВМ → пройти первичную настройку',
+      '<strong>Вариант 3 · Hyper-V (платно):</strong> запросить экспорт-архив у менеджера → импортировать через Hyper-V Manager → запустить (оплачивается отдельно от лицензии)',
+      '<strong>Вариант 4 · Кластер:</strong> Master (12C/32 ГБ) + Worker-ноды (8C/24 ГБ на 1500–2000 устройств) + S3-node (12C/24 ГБ) для хранилища контента',
+      'Для всех вариантов: прописать DNS-имя и установить SSL-сертификат',
+      'Открыть порты 80/443 в firewall (входящие и исходящие)',
       'Запустить сервис и проверить доступность по доменному имени',
       'Создать первого администратора и активировать лицензии'
     ],
     post:[
-      'Для кластера: master 12C/32 ГБ + worker 8C/24 ГБ на 1500–2000 устройств + S3-node 12C/24 ГБ',
-      'Настроить регулярные backup-ы',
-      'Подключить устройства по 9-значному коду'
+      'Настроить регулярные резервные копии БД и медиатеки',
+      'Подключить устройства по 9-значному коду',
+      'Для кластера — проверить балансировку между Worker-нодами'
     ],
     gotchas:[
-      'CPU без AVX — сервер не запустится',
-      'Self-signed сертификаты приведут к ошибкам подключения клиентов',
+      'CPU без AVX — сервер не запустится; проверять <code>cat /proc/cpuinfo | grep avx</code> заранее',
+      'Self-signed сертификаты приведут к ошибкам подключения клиентов (Tizen и AstraLinux вообще не примут)',
+      'Hyper-V требует <strong>отдельной оплаты</strong> сверх лицензии',
+      'Docker-only установки в wiki не задокументированы — Docker используется только внутри кластерного варианта',
       'Минимальная пропускная способность сети — 3–50 Мбит/с'
     ],
     wiki:'https://wiki.smartplayer.org/index.php?title=Локальный_Сервер'
@@ -2969,6 +3020,7 @@ function renderInstall(){
   const sec=document.getElementById('install-sections');
   if(!nav||!sec)return;
   nav.innerHTML='';sec.innerHTML='';
+  const navItems=[];
   INSTALL.forEach(p=>{
     // nav pill
     const a=document.createElement('a');
@@ -2977,6 +3029,7 @@ function renderInstall(){
     a.innerHTML=`<span class="install-nav-dot"></span>${esc(p.name)}`;
     a.addEventListener('click',(e)=>{e.preventDefault();const t=document.getElementById('inst-'+p.id);if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});
     nav.appendChild(a);
+    navItems.push({pid:p.id,el:a});
     // section
     const card=document.createElement('section');
     card.className='install-card';card.id='inst-'+p.id;
@@ -3023,6 +3076,19 @@ function renderInstall(){
     `;
     sec.appendChild(card);
   });
+  // Scrollspy: highlight nav pill matching the section currently in view
+  if('IntersectionObserver' in window){
+    const setActive=(pid)=>{
+      navItems.forEach(it=>it.el.classList.toggle('active',it.pid===pid));
+    };
+    const sections=INSTALL.map(p=>document.getElementById('inst-'+p.id)).filter(Boolean);
+    const io=new IntersectionObserver((entries)=>{
+      const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);
+      if(visible[0]){const id=visible[0].target.id.replace('inst-','');setActive(id);}
+    },{rootMargin:'-25% 0px -60% 0px',threshold:0});
+    sections.forEach(s=>io.observe(s));
+    if(sections[0])setActive(sections[0].id.replace('inst-',''));
+  }
 }
 
 // ═══════════════════════════════════════
