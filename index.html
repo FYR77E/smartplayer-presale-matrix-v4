@@ -955,6 +955,8 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
   border-color:var(--accent-d)!important;color:var(--accent)!important;font-weight:700!important;
 }
 .quick-btn-export:hover{box-shadow:0 8px 22px -10px var(--accent);transform:translateY(-1px);}
+.quick-btn-cross{border-color:var(--accent)!important;color:var(--accent)!important;font-weight:600!important;}
+.quick-btn-cross:hover{background:var(--accent-dim)!important;}
 .cmp-stats{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
 .cmp-stats strong{color:var(--text);font-weight:700;}
 .cmp-stats .cmp-stats-diff{color:var(--accent);}
@@ -1599,14 +1601,14 @@ body{
     <button class="tab active" role="tab" aria-selected="true" data-view="dash" onclick="switchView('dash')">
       <span class="tab-icon" aria-hidden="true">◎</span>Обзор
     </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="matrix" onclick="switchView('matrix')">
-      <span class="tab-icon" aria-hidden="true">▦</span>Матрица
+    <button class="tab" role="tab" aria-selected="false" data-view="matrix" onclick="switchView('matrix')" title="Все функции × все 8 платформ — общий обзор">
+      <span class="tab-icon" aria-hidden="true">▦</span>Матрица функций
     </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="platforms" onclick="switchView('platforms')">
+    <button class="tab" role="tab" aria-selected="false" data-view="platforms" onclick="switchView('platforms')" title="Карточки 8 платформ с подробностями">
       <span class="tab-icon" aria-hidden="true">▤</span>Платформы
     </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="compare" onclick="switchView('compare')">
-      <span class="tab-icon" aria-hidden="true">⊞</span>Сравнение
+    <button class="tab" role="tab" aria-selected="false" data-view="compare" onclick="switchView('compare')" title="Side-by-side сравнение 2–8 выбранных платформ с диффами">
+      <span class="tab-icon" aria-hidden="true">⊞</span>Сравнение платформ
     </button>
     <button class="tab" role="tab" aria-selected="false" data-view="install" onclick="switchView('install')">
       <span class="tab-icon" aria-hidden="true">⇣</span>Установка
@@ -1835,6 +1837,8 @@ body{
     <button class="quick-btn" onclick="expandAll()">↓ Развернуть всё</button>
     <button class="quick-btn" onclick="collapseAll()">↑ Свернуть всё</button>
     <button class="quick-btn" onclick="resetFilter()">× Сбросить</button>
+    <div class="mx-filter-sep"></div>
+    <button class="quick-btn quick-btn-cross" onclick="goCompareFromMatrix()" title="Перенесёт фильтр категорий в Сравнение и откроет side-by-side">↔ Сравнить 2–4 платформы</button>
   </div>
   <div class="cat-filter" id="cat-filter"></div>
   <div class="twrap">
@@ -1877,6 +1881,8 @@ body{
       <button class="quick-btn" onclick="cmpClear()">× Очистить</button>
       <button class="quick-btn quick-btn-share" onclick="cmpShareLink(this)" title="Скопировать ссылку с текущим выбором">🔗 Скопировать ссылку</button>
       <button class="quick-btn quick-btn-export" onclick="cmpExport()" title="Сохранить текущий выбор как PDF / распечатать">📄 PDF для клиента</button>
+      <div class="mx-filter-sep"></div>
+      <button class="quick-btn quick-btn-cross" onclick="goMatrixFromCompare()" title="Перейти к полному обзору всех функций × всех платформ">▦ К Матрице функций</button>
       <span id="cmp-stats" class="cmp-stats" aria-live="polite"></span>
     </div>
     <div class="cmp-cats" id="cmp-cats" aria-label="Фильтр категорий"></div>
@@ -2549,6 +2555,44 @@ function toggleCmpDiff(){
 function cmpSelectAll(){PLATS.forEach(p=>cmpSel.add(p.id));renderCompareSelector();renderCompareTable();syncStateToURL();}
 function cmpReset(){cmpSel=new Set(['a','w']);cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();syncStateToURL();}
 function cmpClear(){cmpSel=new Set();cmpDiffOnly=false;cmpCatFilter=new Set();document.getElementById('cmp-diff-btn').classList.remove('diff-on');renderCompareSelector();renderCmpCats();renderCompareTable();syncStateToURL();}
+
+// ─── Soft unification: Matrix ↔ Compare with shared category filter ──────────
+function _matrixActiveCats(){
+  // Read the chips active in Matrix view. A chip with class 'on' but NOT 'all'
+  // represents a selected category. Empty set = «all categories».
+  const sel=new Set();
+  document.querySelectorAll('#cat-filter .cat-chip.on:not(.all)').forEach(b=>{
+    const c=b.getAttribute('data-cat'); if(c) sel.add(c);
+  });
+  return sel;
+}
+function goCompareFromMatrix(){
+  // Carry the matrix category filter into Compare so user keeps focus.
+  cmpCatFilter=_matrixActiveCats();
+  switchView('compare');
+  setTimeout(()=>{renderCmpCats();renderCompareTable();syncStateToURL();},80);
+}
+function goMatrixFromCompare(){
+  // Carry the compare category filter back into Matrix.
+  switchView('matrix');
+  setTimeout(()=>{
+    // Activate matching chips in matrix UI
+    document.querySelectorAll('#cat-filter .cat-chip').forEach(b=>{
+      const c=b.getAttribute('data-cat');
+      const isAll=b.classList.contains('all');
+      if(isAll){b.classList.toggle('on', cmpCatFilter.size===0);}
+      else{b.classList.toggle('on', c && cmpCatFilter.has(c));}
+    });
+    // Apply the filter to matrix rendering. If the matrix uses a different state
+    // mechanism (chip clicks), trigger one click per chip we need on.
+    if(cmpCatFilter.size>0){
+      document.querySelectorAll('#cat-filter .cat-chip').forEach(b=>{
+        const c=b.getAttribute('data-cat');
+        if(c && cmpCatFilter.has(c) && !b.classList.contains('on')){b.click();}
+      });
+    }
+  },80);
+}
 function cmpShareLink(btn){
   syncStateToURL();
   const url=location.href;
