@@ -286,8 +286,12 @@ input{font-family:inherit;}
 /* ═══════════════════════════════════════
    VIEW CONTAINER
 ═══════════════════════════════════════ */
-.view{display:none;}
-.view.active{display:block;}
+/* View switching: opacity fade for smooth transition (no flicker on swap) */
+.view{display:none;opacity:0;transition:opacity .22s ease-out;}
+.view.active{display:block;opacity:1;}
+@media (prefers-reduced-motion:reduce){
+  .view{transition:none;}
+}
 
 /* ═══════════════════════════════════════
    VIEW 1: ОБЗОР (Dashboard)
@@ -957,6 +961,51 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
 .quick-btn-export:hover{box-shadow:0 8px 22px -10px var(--accent);transform:translateY(-1px);}
 .quick-btn-cross{border-color:var(--accent)!important;color:var(--accent)!important;font-weight:600!important;}
 .quick-btn-cross:hover{background:var(--accent-dim)!important;}
+
+/* ─── Built-in column-picker + diff toggle (replaces separate Compare view) ─── */
+.mx-plat-filter{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+  padding:10px 18px 6px;
+}
+.mx-plat-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;font-size:11.5px;font-weight:600;
+  border:1px solid var(--border);background:var(--bg2);color:var(--muted);
+  border-radius:999px;cursor:pointer;
+  transition:border-color .14s,background .14s,color .14s;
+  font-family:inherit;
+}
+.mx-plat-chip:hover{border-color:var(--border2);color:var(--text2);}
+.mx-plat-chip.on{
+  background:var(--bg3);color:var(--text);
+  border-color:var(--pcolor,var(--accent));
+}
+.mx-plat-chip-all,.mx-plat-all{font-weight:700;letter-spacing:.01em;text-transform:none;}
+.mx-plat-all{padding-left:14px;padding-right:14px;}
+.mx-plat-all.on{background:var(--accent-dim);color:var(--accent);border-color:var(--accent);}
+.mx-plat-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--pcolor,var(--accent));
+}
+/* Hide platform columns (header + body cells) when not in current selection */
+.hidden-col{display:none!important;}
+/* Diff-only button on state */
+.quick-btn.on{background:var(--accent-dim)!important;color:var(--accent)!important;border-color:var(--accent)!important;}
+
+/* ─── Dashboard trim: only top 4 bento tiles, hide secondary sections ─── */
+#view-dash .bento-timeline{display:none!important;}
+#view-dash .section-head,
+#view-dash .scenarios,
+#view-dash .flags,
+#view-dash .dash-details{display:none!important;}
+/* Re-balance bento grid so 4 tiles fit cleanly without the timeline */
+@media (min-width:1024px){
+  .bento{grid-template-rows:auto auto!important;}
+  .bento-hero{grid-area:1 / 1 / 2 / 4!important;}
+  .bento-signals{grid-area:1 / 4 / 3 / 7!important;}
+  .bento-actions{grid-area:2 / 1 / 3 / 4!important;}
+  .bento-cats{grid-area:3 / 1 / 4 / 7!important;}
+}
 .cmp-stats{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
 .cmp-stats strong{color:var(--text);font-weight:700;}
 .cmp-stats .cmp-stats-diff{color:var(--accent);}
@@ -1290,13 +1339,14 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
 @keyframes sp-fade-up{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 @keyframes sp-draw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
 
-/* Bento tile staggered entrance */
-.bento-tile{animation:sp-fade-up .55s cubic-bezier(.2,.8,.2,1) both;}
-.bento-hero    {animation-delay:.05s;}
-.bento-signals {animation-delay:.12s;}
-.bento-cats    {animation-delay:.19s;}
-.bento-actions {animation-delay:.26s;}
-.bento-timeline{animation-delay:.33s;}
+/* Bento tile staggered entrance — only on initial first paint of dashboard,
+   not on every re-show via tab switch (was causing flicker / re-animation). */
+.bento.bento-anim .bento-tile{animation:sp-fade-up .55s cubic-bezier(.2,.8,.2,1) both;}
+.bento.bento-anim .bento-hero    {animation-delay:.05s;}
+.bento.bento-anim .bento-signals {animation-delay:.12s;}
+.bento.bento-anim .bento-cats    {animation-delay:.19s;}
+.bento.bento-anim .bento-actions {animation-delay:.26s;}
+.bento.bento-anim .bento-timeline{animation-delay:.33s;}
 
 /* Section-head accent underline draws in on view */
 .section-head::before{transform-origin:left center;animation:sp-draw .8s cubic-bezier(.22,1,.36,1) .15s both;}
@@ -1601,17 +1651,8 @@ body{
     <button class="tab active" role="tab" aria-selected="true" data-view="dash" onclick="switchView('dash')">
       <span class="tab-icon" aria-hidden="true">◎</span>Обзор
     </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="matrix" onclick="switchView('matrix')" title="Все функции × все 8 платформ — общий обзор">
+    <button class="tab" role="tab" aria-selected="false" data-view="matrix" onclick="switchView('matrix')" title="Матрица функций × платформы со встроенным сравнением">
       <span class="tab-icon" aria-hidden="true">▦</span>Матрица функций
-    </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="platforms" onclick="switchView('platforms')" title="Карточки 8 платформ с подробностями">
-      <span class="tab-icon" aria-hidden="true">▤</span>Платформы
-    </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="compare" onclick="switchView('compare')" title="Side-by-side сравнение 2–8 выбранных платформ с диффами">
-      <span class="tab-icon" aria-hidden="true">⊞</span>Сравнение платформ
-    </button>
-    <button class="tab" role="tab" aria-selected="false" data-view="install" onclick="switchView('install')">
-      <span class="tab-icon" aria-hidden="true">⇣</span>Установка
     </button>
   </nav>
 
@@ -1652,17 +1693,17 @@ body{
       <div class="bento-tile bento-actions">
         <div class="bento-tile-label"><span class="dot"></span>Быстрые сценарии</div>
         <div class="bento-action-list">
-          <button class="bento-action act-accent" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['w','l']);renderCompareSelector();renderCompareTable();},80)">
+          <button class="bento-action act-accent" type="button" onclick="event.stopPropagation();goMatrixWithPlats(['w','l']);">
             <span class="act-ico">⚡</span>
             <span class="act-text"><span class="act-title">Windows vs Linux</span><span class="act-sub">Десктопные ОС, общие функции и расхождения</span></span>
             <span class="act-arrow" aria-hidden="true">→</span>
           </button>
-          <button class="bento-action act-info" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpSel=new Set(['a','t','o']);renderCompareSelector();renderCompareTable();},80)">
+          <button class="bento-action act-info" type="button" onclick="event.stopPropagation();goMatrixWithPlats(['a','t','o']);">
             <span class="act-ico">📱</span>
             <span class="act-text"><span class="act-title">Мобильные / ТВ</span><span class="act-sub">Android · Tizen · Orsay — встроенные платформы</span></span>
             <span class="act-arrow" aria-hidden="true">→</span>
           </button>
-          <button class="bento-action act-warn" type="button" onclick="event.stopPropagation();switchView('compare');setTimeout(()=>{cmpDiffOnly=true;document.getElementById('cmp-diff-btn').classList.add('diff-on');renderCompareTable();},80)">
+          <button class="bento-action act-warn" type="button" onclick="event.stopPropagation();goMatrixDiff();">
             <span class="act-ico">◈</span>
             <span class="act-text"><span class="act-title">Только различия</span><span class="act-sub">Скрыть совпадающие — найти узкие места</span></span>
             <span class="act-arrow" aria-hidden="true">→</span>
@@ -1834,12 +1875,12 @@ body{
     <span class="legend-item"><span class="legend-dot u"></span>N/A</span>
     <div class="mx-filter-sep"></div>
     <button class="quick-btn" id="issues-btn" onclick="toggleIssues()">⚠ Только проблемы</button>
+    <button class="quick-btn" id="diff-only-btn" onclick="toggleMxDiff()" title="Скрыть строки где все выбранные платформы согласованы">◈ Только различия</button>
     <button class="quick-btn" onclick="expandAll()">↓ Развернуть всё</button>
     <button class="quick-btn" onclick="collapseAll()">↑ Свернуть всё</button>
     <button class="quick-btn" onclick="resetFilter()">× Сбросить</button>
-    <div class="mx-filter-sep"></div>
-    <button class="quick-btn quick-btn-cross" onclick="goCompareFromMatrix()" title="Перенесёт фильтр категорий в Сравнение и откроет side-by-side">↔ Сравнить 2–4 платформы</button>
   </div>
+  <div class="mx-plat-filter" id="mx-plat-filter" aria-label="Платформы для сравнения"></div>
   <div class="cat-filter" id="cat-filter"></div>
   <div class="twrap">
     <table id="mt">
@@ -1881,8 +1922,6 @@ body{
       <button class="quick-btn" onclick="cmpClear()">× Очистить</button>
       <button class="quick-btn quick-btn-share" onclick="cmpShareLink(this)" title="Скопировать ссылку с текущим выбором">🔗 Скопировать ссылку</button>
       <button class="quick-btn quick-btn-export" onclick="cmpExport()" title="Сохранить текущий выбор как PDF / распечатать">📄 PDF для клиента</button>
-      <div class="mx-filter-sep"></div>
-      <button class="quick-btn quick-btn-cross" onclick="goMatrixFromCompare()" title="Перейти к полному обзору всех функций × всех платформ">▦ К Матрице функций</button>
       <span id="cmp-stats" class="cmp-stats" aria-live="polite"></span>
     </div>
     <div class="cmp-cats" id="cmp-cats" aria-label="Фильтр категорий"></div>
@@ -2284,6 +2323,9 @@ let state={
   search:'',
   selectedPlat:null,
   theme:'dark',
+  // visiblePlats: filled in initial setup once PLATS exist. null = all visible.
+  visiblePlats:null,
+  diffOnly:false,
 };
 
 const THEME_KEY='sp-theme';
@@ -2390,10 +2432,14 @@ function syncURLToState(){
   try{
     const p=new URLSearchParams(location.search);
     const v=p.get('v');
-    if(v&&['matrix','platforms','compare','install'].includes(v))switchView(v,{skipURL:true});
+    // Only the 2 active views accept URL routing now.
+    if(v&&['matrix'].includes(v))switchView(v,{skipURL:true});
     if(p.get('cmp')){
       const ids=p.get('cmp').split(',').filter(id=>PLATS.find(x=>x.id===id));
-      if(ids.length>=1){cmpSel=new Set(ids);}
+      if(ids.length>=1){
+        cmpSel=new Set(ids);             // legacy state (kept for any deep links)
+        state.visiblePlats=new Set(ids); // new in-matrix column picker
+      }
     }
     if(p.get('cat')){
       const ids=p.get('cat').split(',').filter(id=>CATS[id]);
@@ -2401,8 +2447,9 @@ function syncURLToState(){
     }
     if(p.get('diff')==='1'){
       cmpDiffOnly=true;const b=document.getElementById('cmp-diff-btn');if(b)b.classList.add('diff-on');
+      state.diffOnly=true;const b2=document.getElementById('diff-only-btn');if(b2)b2.classList.add('on');
     }
-    if(state.view==='compare')renderCompare();
+    if(state.view==='matrix'){applyPlatVisibility&&applyPlatVisibility();renderPlatFilter&&renderPlatFilter();renderMatrixBody&&renderMatrixBody();}
   }finally{_urlSyncing=false;}
 }
 window.addEventListener('popstate',syncURLToState);
@@ -2724,6 +2771,14 @@ function renderBento(){
 
 function renderDashboard(){
   renderBento();
+  // Trigger bento entrance animation ONCE on first dashboard render.
+  // Subsequent view switches won't restart the animation (would cause flicker).
+  if(!window._bentoAnimated){
+    const b=document.getElementById('bento');
+    if(b){
+      requestAnimationFrame(()=>{b.classList.add('bento-anim');window._bentoAnimated=true;});
+    }
+  }
 
   // scenarios
   const sc=document.getElementById('dash-scenarios');
@@ -2762,10 +2817,13 @@ function renderDashboard(){
 //  MATRIX
 // ═══════════════════════════════════════
 function renderMatrix(){
-  // header
+  // header — RESET to avoid duplicate columns on re-render
+  // (was prone to doubling when matrix is re-mounted, e.g. inside iframe in portal-v5)
   const hr=document.getElementById('hr');
+  hr.innerHTML='<th class="fc">ФУНКЦИЯ</th>';
   PLATS.forEach(p=>{
     const th=document.createElement('th');th.style.setProperty('--pcolor',p.col);
+    th.dataset.platId=p.id;
     th.innerHTML=`<div class="thp"><span class="pn">${p.name}${p.badge==='new'?'<span class="new-badge">NEW</span>':''}</span><span class="ps2">${p.sub}</span></div>`;
     hr.appendChild(th);
   });
@@ -2784,19 +2842,28 @@ function renderMatrix(){
     };
     cf.appendChild(btn);
   });
+  renderPlatFilter();
+  applyPlatVisibility();
   renderMatrixBody();
 }
 
 function renderMatrixBody(){
   const tb=document.getElementById('tb');tb.innerHTML='';
   const q=state.search.toLowerCase();
+  const visibleIds=new Set(_visiblePlats());
   let cur=null;
   D.forEach(feat=>{
     const[cat,name,stats]=feat;
     if(!state.activeCats.has(cat))return;
     if(state.issueMode){
-      const hi=PLATS.some(p=>{const v=ps(stats[p.id]);return v.s==='p'||v.s==='n'||v.s==='w';});
+      const hi=PLATS.some(p=>{if(!visibleIds.has(p.id))return false;const v=ps(stats[p.id]);return v.s==='p'||v.s==='n'||v.s==='w';});
       if(!hi)return;
+    }
+    if(state.diffOnly){
+      // Hide rows where all visible platforms agree on the same status
+      const statuses=PLATS.filter(p=>visibleIds.has(p.id)).map(p=>ps(stats[p.id]).s);
+      const allSame=statuses.every(s=>s===statuses[0]);
+      if(allSame)return;
     }
     if(q){
       const m=name.toLowerCase().includes(q)||PLATS.some(p=>{const v=ps(stats[p.id]);return v.note.toLowerCase().includes(q);});
@@ -2823,7 +2890,8 @@ function renderMatrixBody(){
     ntd.innerHTML=name+tags;
     tr.appendChild(ntd);
     PLATS.forEach(p=>{
-      const td=document.createElement('td');td.className='sc';
+      const td=document.createElement('td');td.className='sc';td.dataset.platId=p.id;
+      if(!visibleIds.has(p.id))td.classList.add('hidden-col');
       const v=ps(stats[p.id]);
       const chip=document.createElement('span');chip.className=`chip ${v.s}${v.note?' has-note':''}`;
       chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${SL[v.s]}</span>`;
@@ -2843,10 +2911,86 @@ function expandAll(){state.collapsed={};renderMatrixBody();}
 function collapseAll(){CO.forEach(c=>state.collapsed[c]=true);renderMatrixBody();}
 function resetFilter(){
   state.issueMode=false;state.search='';state.collapsed={};state.activeCats=new Set(CO);
+  state.visiblePlats=null;state.diffOnly=false;
   document.getElementById('issues-btn').classList.remove('on');
+  const dBtn=document.getElementById('diff-only-btn'); if(dBtn) dBtn.classList.remove('on');
   document.getElementById('si').value='';
   document.querySelectorAll('.cat-chip').forEach(b=>b.classList.add('on'));
+  applyPlatVisibility();
+  renderPlatFilter();
   renderMatrixBody();
+}
+
+// ─── Built-in compare: platform column filter + diff-only ──────────────────
+function _visiblePlats(){
+  // state.visiblePlats=null means all platforms visible
+  if(!state.visiblePlats) return PLATS.map(p=>p.id);
+  return PLATS.filter(p=>state.visiblePlats.has(p.id)).map(p=>p.id);
+}
+function renderPlatFilter(){
+  const wrap=document.getElementById('mx-plat-filter'); if(!wrap) return;
+  wrap.innerHTML='';
+  const visible=new Set(_visiblePlats());
+  const allBtn=document.createElement('button');
+  allBtn.type='button';
+  allBtn.className='mx-plat-chip mx-plat-all'+(state.visiblePlats===null?' on':'');
+  allBtn.textContent='Все 8 платформ';
+  allBtn.onclick=()=>{ state.visiblePlats=null; applyPlatVisibility(); renderPlatFilter(); renderMatrixBody(); };
+  wrap.appendChild(allBtn);
+  PLATS.forEach(p=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='mx-plat-chip'+(visible.has(p.id)?' on':'');
+    b.style.setProperty('--pcolor', p.col);
+    b.dataset.platId=p.id;
+    b.innerHTML=`<span class="mx-plat-dot"></span>${p.name}`;
+    b.onclick=()=>{
+      if(state.visiblePlats===null){
+        // First toggle off ALL state → start a subset, deselect this one
+        state.visiblePlats=new Set(PLATS.map(x=>x.id));
+        state.visiblePlats.delete(p.id);
+      } else if(state.visiblePlats.has(p.id)){
+        if(state.visiblePlats.size<=1){return;} // keep at least 1 platform visible
+        state.visiblePlats.delete(p.id);
+      } else {
+        state.visiblePlats.add(p.id);
+        // If user re-selected all platforms, collapse back to «null» (all visible)
+        if(state.visiblePlats.size===PLATS.length) state.visiblePlats=null;
+      }
+      applyPlatVisibility();
+      renderPlatFilter();
+      renderMatrixBody();
+    };
+    wrap.appendChild(b);
+  });
+}
+function applyPlatVisibility(){
+  // Hide/show column header cells (data-plat-id attribute set in renderMatrix)
+  const visible=new Set(_visiblePlats());
+  document.querySelectorAll('#hr th[data-plat-id]').forEach(th=>{
+    const id=th.dataset.platId;
+    th.classList.toggle('hidden-col', !visible.has(id));
+  });
+}
+function toggleMxDiff(){
+  state.diffOnly=!state.diffOnly;
+  const b=document.getElementById('diff-only-btn'); if(b) b.classList.toggle('on', state.diffOnly);
+  renderMatrixBody();
+}
+
+// Dashboard «quick scenarios» bridges — open Matrix view with preset filters
+function goMatrixWithPlats(ids){
+  state.visiblePlats=new Set(ids);
+  switchView('matrix');
+  setTimeout(()=>{ applyPlatVisibility(); renderPlatFilter(); renderMatrixBody(); },90);
+}
+function goMatrixDiff(){
+  state.diffOnly=true;
+  switchView('matrix');
+  setTimeout(()=>{
+    const b=document.getElementById('diff-only-btn'); if(b) b.classList.add('on');
+    renderMatrixBody();
+  },90);
 }
 
 // ═══════════════════════════════════════
@@ -3560,9 +3704,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='?'||(e.shiftKey&&e.key==='/')){e.preventDefault();openKbd();return;}
   if(e.key==='1'){e.preventDefault();switchView('dash');}
   if(e.key==='2'){e.preventDefault();switchView('matrix');}
-  if(e.key==='3'){e.preventDefault();switchView('platforms');}
-  if(e.key==='4'){e.preventDefault();switchView('compare');}
-  if(e.key==='5'){e.preventDefault();switchView('install');}
   if(e.key==='t'||e.key==='T'){e.preventDefault();toggleTheme();}
   if(e.key==='/'){e.preventDefault();openPalette();}
 });
