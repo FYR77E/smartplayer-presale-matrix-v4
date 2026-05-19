@@ -1,2 +1,5 @@
 .vercel
 .DS_Store
+
+# repomix CLI output
+.repomix-output.md
