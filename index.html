@@ -464,6 +464,27 @@ td.sc{text-align:center;padding:6px 4px;min-width:125px;}
   .cat-chip{padding:4px 8px;font-size:10px;}
 }
 
+/* — Variant C (≤640px): compare up to 3 platforms, no horizontal scroll — */
+/* On mobile the matrix becomes a 3-column compare: feature + up to 3 plats. */
+/* 150 (fc) + 3×72 = 366px < 375px, so readable text pills fit without scroll. */
+.mx-plat-hint{display:none;} /* base — overridden inside the media query below */
+@media (max-width:640px){
+  /* «Все 8 платформ» would force overflow on a phone — hide it, cap at 3 */
+  .mx-plat-all{display:none!important;}
+  .mx-plat-hint{display:flex;align-items:center;gap:6px;width:100%;order:-1;
+    margin-bottom:2px;font-size:11px;color:var(--muted);font-weight:600;}
+  .mx-plat-hint b{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums;}
+  .mx-plat-chip[data-at-cap].off-cap{opacity:.42;}
+  /* readable text pills instead of icon-only (we now have room with ≤3 cols) */
+  /* scoped to .twrap so the Compare view's own chip styling is untouched */
+  td.sc{min-width:72px;padding:6px 3px;}
+  thead th[data-plat-id]{min-width:72px;}
+  .twrap .chip{padding:5px 7px;font-size:11px;gap:0;}
+  .twrap .chip-icon{display:none;}
+  .twrap .chip > span:not(.chip-icon){display:inline;}
+  .twrap .chip.has-note::after{content:"·";margin-left:2px;font-weight:bold;}
+}
+
 .chip{
   display:inline-flex;align-items:center;gap:4px;
   padding:4px 9px;border-radius:5px;font-size:11px;font-weight:600;
@@ -1880,6 +1901,7 @@ body{
     <button class="quick-btn quick-btn-cross" onclick="goCompareFromMatrix()" title="Перенесёт фильтр категорий в Сравнение и откроет side-by-side">↔ Сравнить 2–4 платформы</button>
   </div>
   <div class="mx-plat-filter" id="mx-plat-filter" aria-label="Платформы для сравнения"></div>
+  <div class="mx-plat-hint" id="mx-plat-hint" aria-hidden="true"></div>
   <div class="cat-filter" id="cat-filter"></div>
   <div class="twrap">
     <table id="mt">
@@ -2337,6 +2359,11 @@ const THEME_KEY='sp-theme';
 function ps(v){if(!v)return{s:'u',note:''};const i=v.indexOf('|');if(i<0)return{s:v.trim(),note:''};return{s:v.slice(0,i).trim(),note:v.slice(i+1).trim()};}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 const SL={y:'Да',p:'Частично',n:'Нет',u:'N/A',w:'Баг!'};
+// Short labels for the ≤3-column mobile compare (Variant C) — full text would
+// overflow 375px; the note panel still carries the full explanation on tap.
+const SL_SHORT={y:'Да',p:'Част.',n:'Нет',u:'N/A',w:'Баг'};
+// Short platform names for the mobile compare header (full ones clip at 72px).
+const PN_SHORT={a:'Android',w:'Windows',l:'Linux',t:'Tizen',o:'Orsay',wb:'WebOS',r:'Raspberry',bs:'BrightSign'};
 const SI={y:'✓',p:'~',n:'✗',u:'?',w:'!'};
 const SLBL={y:'✓ Работает полностью',p:'~ Частично / с ограничениями',n:'✗ Не поддерживается',u:'? Нет данных',w:'! Баг / временно не работает'};
 
@@ -2454,6 +2481,18 @@ function syncURLToState(){
   }finally{_urlSyncing=false;}
 }
 window.addEventListener('popstate',syncURLToState);
+
+// Variant C: re-clamp the platform column picker when crossing the 640px
+// breakpoint (e.g. phone rotation, or desktop→mobile resize in dev tools).
+let _mxResizeT=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(_mxResizeT);
+  _mxResizeT=setTimeout(()=>{
+    if(!window._matrixRendered)return;
+    _mxClampMobile();
+    renderMatrix(); // rebuilds header (short plat names), filter, columns, body
+  },180);
+});
 
 // ═══════════════════════════════════════
 //  COMPARE
@@ -2825,7 +2864,8 @@ function renderMatrix(){
   PLATS.forEach(p=>{
     const th=document.createElement('th');th.style.setProperty('--pcolor',p.col);
     th.dataset.platId=p.id;
-    th.innerHTML=`<div class="thp"><span class="pn">${p.name}${p.badge==='new'?'<span class="new-badge">NEW</span>':''}</span><span class="ps2">${p.sub}</span></div>`;
+    const pname=_mxMobile()?(PN_SHORT[p.id]||p.name):p.name;
+    th.innerHTML=`<div class="thp"><span class="pn">${pname}${p.badge==='new'?'<span class="new-badge">NEW</span>':''}</span><span class="ps2">${p.sub}</span></div>`;
     hr.appendChild(th);
   });
   // category filter (sync visible state with state.activeCats — fix init mismatch)
@@ -2895,7 +2935,7 @@ function renderMatrixBody(){
       if(!visibleIds.has(p.id))td.classList.add('hidden-col');
       const v=ps(stats[p.id]);
       const chip=document.createElement('span');chip.className=`chip ${v.s}${v.note?' has-note':''}`;
-      chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${SL[v.s]}</span>`;
+      chip.innerHTML=`<span class="chip-icon">${SI[v.s]}</span><span>${(_mxMobile()?SL_SHORT:SL)[v.s]}</span>`;
       chip.onclick=(e)=>{e.stopPropagation();showPanel(p.name,name,v.note,v.s);};
       td.appendChild(chip);tr.appendChild(td);
     });
@@ -2923,6 +2963,26 @@ function resetFilter(){
 }
 
 // ─── Built-in compare: platform column filter + diff-only ──────────────────
+// Variant C: on phones the matrix is a «compare up to 3 platforms» view —
+// 8 columns can't fit 375px honestly, so we cap the column picker at 3.
+const MX_MOBILE_CAP=3;
+const MX_MOBILE_DEFAULT=['a','w','t']; // приставка · ПК-плеер · проф-панель
+function _mxMobile(){return window.matchMedia('(max-width:640px)').matches;}
+// Force visiblePlats into a valid ≤3 subset for mobile. Returns true if changed.
+function _mxClampMobile(){
+  if(!_mxMobile())return false;
+  const before=state.visiblePlats?[...state.visiblePlats].join(','):null;
+  if(state.visiblePlats===null){
+    state.visiblePlats=new Set(MX_MOBILE_DEFAULT);
+  } else if(state.visiblePlats.size>MX_MOBILE_CAP){
+    // keep the first 3 in insertion order (Set preserves it)
+    state.visiblePlats=new Set([...state.visiblePlats].slice(0,MX_MOBILE_CAP));
+  } else if(state.visiblePlats.size===0){
+    state.visiblePlats=new Set(MX_MOBILE_DEFAULT);
+  }
+  const after=[...state.visiblePlats].join(',');
+  return before!==after;
+}
 function _visiblePlats(){
   // state.visiblePlats=null means all platforms visible
   if(!state.visiblePlats) return PLATS.map(p=>p.id);
@@ -2930,6 +2990,8 @@ function _visiblePlats(){
 }
 function renderPlatFilter(){
   const wrap=document.getElementById('mx-plat-filter'); if(!wrap) return;
+  const mobile=_mxMobile();
+  if(mobile)_mxClampMobile();
   wrap.innerHTML='';
   const visible=new Set(_visiblePlats());
   const allBtn=document.createElement('button');
@@ -2938,15 +3000,31 @@ function renderPlatFilter(){
   allBtn.textContent='Все 8 платформ';
   allBtn.onclick=()=>{ state.visiblePlats=null; applyPlatVisibility(); renderPlatFilter(); renderMatrixBody(); };
   wrap.appendChild(allBtn);
+  const atCap=mobile&&visible.size>=MX_MOBILE_CAP;
   PLATS.forEach(p=>{
     const b=document.createElement('button');
     b.type='button';
-    b.className='mx-plat-chip'+(visible.has(p.id)?' on':'');
+    const on=visible.has(p.id);
+    b.className='mx-plat-chip'+(on?' on':'')+(atCap&&!on?' off-cap':'');
     b.style.setProperty('--pcolor', p.col);
     b.dataset.platId=p.id;
+    if(atCap)b.dataset.atCap='1';
     b.innerHTML=`<span class="mx-plat-dot"></span>${p.name}`;
     b.onclick=()=>{
-      if(state.visiblePlats===null){
+      if(mobile){
+        // Mobile: keep a 1–3 subset; selecting a 4th drops the oldest.
+        if(state.visiblePlats===null) state.visiblePlats=new Set(MX_MOBILE_DEFAULT);
+        if(state.visiblePlats.has(p.id)){
+          if(state.visiblePlats.size<=1)return; // keep at least one column
+          state.visiblePlats.delete(p.id);
+        } else {
+          state.visiblePlats.add(p.id);
+          while(state.visiblePlats.size>MX_MOBILE_CAP){
+            const oldest=state.visiblePlats.values().next().value;
+            state.visiblePlats.delete(oldest);
+          }
+        }
+      } else if(state.visiblePlats===null){
         // First toggle off ALL state → start a subset, deselect this one
         state.visiblePlats=new Set(PLATS.map(x=>x.id));
         state.visiblePlats.delete(p.id);
@@ -2964,6 +3042,15 @@ function renderPlatFilter(){
     };
     wrap.appendChild(b);
   });
+  // Mobile counter «Сравнение: N/3»
+  const hint=document.getElementById('mx-plat-hint');
+  if(hint){
+    if(mobile){
+      hint.innerHTML=`Сравнение: <b>${visible.size}/${MX_MOBILE_CAP}</b> платформ${visible.size>=MX_MOBILE_CAP?' · нажмите ещё одну, чтобы заменить':' · выберите до трёх'}`;
+    } else {
+      hint.innerHTML='';
+    }
+  }
 }
 function applyPlatVisibility(){
   // Hide/show column header cells (data-plat-id attribute set in renderMatrix)
