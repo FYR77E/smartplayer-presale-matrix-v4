@@ -1339,6 +1339,34 @@ html{scrollbar-width:thin;scrollbar-color:var(--bg5) var(--bg);}
   .print-footer{display:block!important;font-size:9px;color:#444;text-align:center;margin-top:14px;padding-top:8px;border-top:1px solid #ccc;}}
 .print-footer{display:none;}
 
+/* — Print styling for the MATRIX view (the Compare view is handled above) — */
+/* Keyed on #view-matrix.active so a raw Ctrl+P on the matrix prints too. */
+@media print{
+  #view-matrix.active .matrix-controls,
+  #view-matrix.active .mx-plat-filter,
+  #view-matrix.active .mx-plat-hint{display:none!important;}
+  #view-matrix.active .twrap{overflow:visible!important;max-height:none!important;border:1px solid #000!important;}
+  #view-matrix.active #mt{width:100%!important;font-size:9px;}
+  #view-matrix.active thead th{position:static!important;background:#f0f0f0!important;color:#000!important;
+    border-bottom:1.5px solid #000!important;padding:6px 4px!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #view-matrix.active thead th.fc{background:#f0f0f0!important;}
+  #view-matrix.active .thp{border-top:none!important;margin-top:0!important;padding-top:0!important;}
+  #view-matrix.active .thp .pn{color:#000!important;font-size:10px!important;}
+  #view-matrix.active .thp .ps2{display:block!important;color:#555!important;font-size:7.5px!important;}
+  #view-matrix.active td.fn, #view-matrix.active th.fc{position:static!important;background:#fff!important;color:#000!important;}
+  #view-matrix.active td.sc{padding:4px 3px!important;background:#fff!important;}
+  #view-matrix.active tr.fr td,
+  #view-matrix.active tr.fr:nth-child(even) td,
+  #view-matrix.active tr.fr:nth-child(even) td.fn{background:#fff!important;border-bottom:1px solid #ccc!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #view-matrix.active tr.fr:hover td{background:#fff!important;}
+  #view-matrix.active tr.fr:hover{box-shadow:none!important;}
+  #view-matrix.active .crow td{background:#e8e8e8!important;color:#000!important;font-weight:700!important;
+    border-top:1px solid #000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #view-matrix.active .crow td .ct{color:#000!important;}
+  #view-matrix.active .chip-icon{display:inline!important;}
+  #view-matrix.active .tag{border:1px solid #999!important;color:#333!important;background:#fff!important;}
+}
+
 /* ═══════════════════════════════════════
    MODERN POLISH — 2026 refresh
 ═══════════════════════════════════════ */
@@ -1626,7 +1654,7 @@ body{
 
 <!-- PRINT-ONLY HEADER (hidden on screen) -->
 <div class="print-header">
-  <div class="ph-title">SmartPlayer · Сравнение платформ</div>
+  <div class="ph-title" id="print-title">SmartPlayer · Сравнение платформ</div>
   <div class="ph-meta" id="print-meta">—</div>
   <div class="ph-source">Источник данных: <b>wiki.smartplayer.org</b> · presale-matrix-v4</div>
 </div>
@@ -1899,6 +1927,7 @@ body{
     <button class="quick-btn" onclick="resetFilter()">× Сбросить</button>
     <div class="mx-filter-sep"></div>
     <button class="quick-btn quick-btn-cross" onclick="goCompareFromMatrix()" title="Перенесёт фильтр категорий в Сравнение и откроет side-by-side">↔ Сравнить 2–4 платформы</button>
+    <button class="quick-btn quick-btn-export" onclick="matrixExport()" title="Сохранить текущий вид матрицы как PDF / распечатать (учитывает выбранные платформы, категории и фильтры)">📄 PDF / Печать</button>
   </div>
   <div class="mx-plat-filter" id="mx-plat-filter" aria-label="Платформы для сравнения"></div>
   <div class="mx-plat-hint" id="mx-plat-hint" aria-hidden="true"></div>
@@ -2702,9 +2731,26 @@ function cmpShareLink(btn){
 function cmpExport(){
   const sel=PLATS.filter(p=>cmpSel.has(p.id));
   if(!sel.length){alert('Выберите хотя бы одну платформу для экспорта.');return;}
+  document.getElementById('print-title').textContent='SmartPlayer · Сравнение платформ';
   document.getElementById('print-meta').textContent=
     `Сравнение: ${sel.map(p=>p.name).join(' · ')} · ${cmpDiffOnly?'только различия':'все строки'}`+
     `${cmpCatFilter.size?' · '+[...cmpCatFilter].map(c=>CATS[c]).join(', '):''}`+
+    ` · ${new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}`;
+  document.body.classList.add('print-mode');
+  window.print();
+  setTimeout(()=>document.body.classList.remove('print-mode'),500);
+}
+// Export the current Matrix view (selected platforms × active categories) as PDF.
+// @page is already landscape in the print block; print CSS keys on #view-matrix.active,
+// so a raw Ctrl+P on the matrix view works too — this just fills the header meta.
+function matrixExport(){
+  const vis=PLATS.filter(p=>_visiblePlats().includes(p.id));
+  const cats=[...state.activeCats];
+  document.getElementById('print-title').textContent='SmartPlayer · Матрица совместимости';
+  document.getElementById('print-meta').textContent=
+    `Платформы: ${vis.map(p=>p.name).join(' · ')}`+
+    `${cats.length<CO.length?' · категории: '+cats.map(c=>CATS[c]).join(', '):' · все категории'}`+
+    `${state.issueMode?' · только проблемы':''}${state.diffOnly?' · только различия':''}`+
     ` · ${new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}`;
   document.body.classList.add('print-mode');
   window.print();
